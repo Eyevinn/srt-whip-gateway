@@ -40,4 +40,11 @@ describe('Engine', () => {
     await expect(engine.removeTransmitter(1234)).rejects.toThrow();
     clearTimeout(t);
   });
+
+  test('can return a list of all transmitters', async () => {
+    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'));
+    await engine.addTransmitter(2345, new URL('https://whip/channel/dummy'));
+    await engine.addTransmitter(3456, new URL('https://whip/channel/dummy'));
+    expect(engine.getAllTransmitters().length).toEqual(3);
+  });
 });

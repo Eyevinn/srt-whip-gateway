@@ -26,6 +26,12 @@ export class Engine {
       }
     }
   }
+
+  getAllTransmitters(): Transmitter[] {
+    const transmitters = [];
+    this.transmitters.forEach((tx) => transmitters.push(tx));
+    return transmitters;
+  }
   
   removeAllTransmitters(): void {
     this.transmitters.clear();
