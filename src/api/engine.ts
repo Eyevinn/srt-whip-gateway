@@ -26,10 +26,11 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
   fastify.get<{ Reply: Tx[]|string }>(
     '/tx', 
     { 
-      schema: { 
+      schema: {
+        description: 'List all available transmitters',
         response: {
           200: Type.Array(Tx),
-          500: Type.String()
+          500: Type.String({ description: 'Error message' })
         }
       }
     },
@@ -52,9 +53,10 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     '/tx/:port',
     {
       schema: {
+        description: 'Obtain a transmitter resource for an SRT port',
         response: {
           200: Tx,
-          500: Type.String()
+          500: Type.String({ description: 'Error message' })
         }
       }
     },
@@ -78,8 +80,9 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     '/tx/:port',
     {
       schema: {
+        description: 'Remove a transmitter for an SRT port',
         response: {
-          500: Type.String(),
+          500: Type.String({ description: 'Error message' }),
         }
       }
     },
@@ -99,11 +102,12 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     '/tx',
     {
       schema: {
+        description: 'Create a transmitter for an SRT port',
         body: Tx,
         response: {
           201: Type.String(),
-          500: Type.String()
-        }
+          500: Type.String({ description: 'Error message' })
+        },
       }
     },
     async (request, reply) => {

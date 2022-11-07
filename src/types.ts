@@ -8,8 +8,8 @@ export enum TxStatus {
 }
 
 export const Tx = Type.Object({
-  port: Type.Number(),
-  whipUrl: Type.String(),
+  port: Type.Number({ description: 'SRT port' }),
+  whipUrl: Type.String({ description: 'WHIP url' }),
   status: Type.Enum(TxStatus)
 });
 export type Tx = Static<typeof Tx>;

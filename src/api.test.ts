@@ -74,7 +74,7 @@ describe('API', () => {
     const app = api({ engine });
     await engine.addTransmitter(9191, new URL('http://whip/dummy'));
     expect(engine.getTransmitter(9191)).toBeDefined();
-    
+
     const response = await app.inject({
       method: 'DELETE',
       url: '/api/v1/tx/9191'
@@ -82,5 +82,15 @@ describe('API', () => {
     expect(response.statusCode).toEqual(204);
     const tx = engine.getTransmitter(9191);
     expect(tx).toBeUndefined();
+  });
+
+  test('provides swagger documentation', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/docs'
+    });
+    expect(response.statusCode).toEqual(302);
   });
 });
