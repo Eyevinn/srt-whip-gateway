@@ -31,6 +31,8 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@fastify/type-provider-typebox": "^2.3.0",
+    "@sinclair/typebox": "0.24.1",
     "fastify": "^4.9.2",
     "fastify-swagger": "^5.2.0",
     "winston": "^3.8.2"

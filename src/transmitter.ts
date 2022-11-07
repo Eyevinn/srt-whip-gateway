@@ -1,5 +1,6 @@
 import { logger } from './util/logger';
 import { spawn } from 'child_process';
+import { Static, Type } from '@sinclair/typebox'
 
 export enum TxStatus {
   IDLE,
@@ -7,6 +8,13 @@ export enum TxStatus {
   STOPPED,
   FAILED
 }
+
+export const Tx = Type.Object({
+  port: Type.Number(),
+  whipUrl: Type.String(),
+  status: Type.Enum(TxStatus)
+});
+export type TxType = Static<typeof Tx>;
 
 export class Transmitter {
   private srtPort: number;
@@ -22,6 +30,14 @@ export class Transmitter {
     this.process = undefined;
 
     this.processSpawner = processSpawner ? processSpawner : spawn;
+  }
+
+  getPort(): number {
+    return this.srtPort;
+  }
+
+  getWhipUrl(): URL {
+    return this.whipURL;
   }
 
   getStatus(): TxStatus {
