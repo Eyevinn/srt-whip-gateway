@@ -130,6 +130,7 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         body: TxStateChange,
         response: {
           200: Type.String(),
+          400: Type.String({ description: 'bad request message'}),
           500: Type.String(),
         }
       }
@@ -144,6 +145,8 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         } else if (request.body.desired === TxStatus.STOPPED) {
           await tx.stop({ doAwait: true });
           reply.code(200).send('Transmitter stopped');
+        } else {
+          reply.code(400).send('Invalid desired state provided');
         }
       } catch (e) {
         console.error(e);
