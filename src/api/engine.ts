@@ -2,7 +2,7 @@ import { FastifyPluginCallback } from "fastify";
 import { Type } from '@sinclair/typebox'
 
 import { Engine } from "../engine";
-import { Tx, TxType } from "../transmitter";
+import { Tx } from "../types";
 
 export interface ApiEngineOpts {
   engine: Engine;
@@ -24,7 +24,7 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     }
   });
 
-  fastify.get<{ Reply: TxType[]|string }>(
+  fastify.get<{ Reply: Tx[]|string }>(
     '/tx', 
     { 
       schema: { 
@@ -39,18 +39,37 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         const transmitters = engine.getAllTransmitters();
         const body = [];
         transmitters.forEach(tx => {
-          body.push({
-            port: tx.getPort(),
-            whipUrl: tx.getWhipUrl().toString(),
-            status: tx.getStatus() 
-          });
+          body.push(tx.getObject());
         })
         reply.status(200).send(body);
       } catch (e) {
+        console.error(e);
         reply.code(500).send('Exception thrown when trying to list all transmitters');
       }
     }
   );
+
+  fastify.post<{ Body: Tx, Reply: Tx|string }>(
+    '/tx',
+    {
+      schema: {
+        response: {
+          201: Tx,
+          500: Type.String()
+        }
+      }
+    },
+    async (request, reply) => {
+      try {
+        const txObject = request.body;
+        const tx = await engine.addTransmitter(txObject.port, new URL(txObject.whipUrl));
+        reply.code(201).send(tx.getObject());
+      } catch (e) {
+        console.error(e);
+        reply.code(500).send('Exception thrown when trying to add a new transmitter');
+      }
+    }
+  )
   next();
 }
 

@@ -1,4 +1,5 @@
-import { Transmitter, TxStatus } from './transmitter';
+import { Transmitter } from './transmitter';
+import { TxStatus } from './types';
 
 export class Engine {
   private transmitters: Map<number, Transmitter>;

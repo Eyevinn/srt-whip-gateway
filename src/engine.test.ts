@@ -1,7 +1,7 @@
 import MockSpawn from 'mock-spawn';
 
 import { Engine } from './engine';
-import { TxStatus } from './transmitter';
+import { TxStatus } from './types';
 import { logger } from "./util/logger";
 
 describe('Engine', () => {

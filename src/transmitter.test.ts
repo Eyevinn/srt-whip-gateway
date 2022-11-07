@@ -1,5 +1,6 @@
 import MockSpawn from 'mock-spawn';
-import { Transmitter, TxStatus } from './transmitter';
+import { TxStatus } from './types';
+import { Transmitter } from './transmitter';
 import { logger } from "./util/logger";
 
 describe('Transmitter', () => {
