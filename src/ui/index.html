@@ -8,10 +8,39 @@
       content="Demonstration of the WHIP Client SDK for Web by Eyevinn Technology AB"
     />
     <script type="module" src="./app.ts"></script>
+    <style type="text/css">
+      header {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      header>*,
+      header>:last-child {
+        padding-top: 0;
+        margin-bottom: 1rem;
+      }
+      footer {
+        text-align: center;
+        font-size: 0.8em;
+      }
+    </style>
     <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">    
   </head>
   <body>
-    
+    <header>
+      <picture>
+        <source srcset="./logo-darkmode.png" media="(prefers-color-scheme: dark)">
+        <img src="./logo-lightmode.png" />
+      </picture>
+      <h1>SRT WHIP Gateway</h1>
+    </header>
+    <section>
+      
+    </section>
+    <footer>
+      <p>By <a target="_blank" href="https://www.eyevinn.se">Eyevinn Technology AB</a> and it is <a target="_blank" href="https://github.com/Eyevinn/srt-whip-gateway">open source</a></p>
+    </footer>
   </body>
 </html>
