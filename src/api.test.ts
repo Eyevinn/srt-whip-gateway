@@ -1,15 +1,10 @@
 import api from "./api";
 import { Engine } from "./engine";
-import { TxStatus } from "./types";
+import { TxStatus } from "./types";
 
 describe('API', () => {
-  let engine: Engine;
-
-  beforeEach(() => {
-    engine = new Engine();
-  });
-
   test('returns healtheck response on /', async () => {
+    const engine = new Engine();
     const app = api({ engine });
     const response = await app.inject({
       method: 'GET',
@@ -21,6 +16,7 @@ describe('API', () => {
   });
 
   test('can return a list of all transmitters', async () => {
+    const engine = new Engine();
     const app = api({ engine });
     let response = await app.inject({
       method: 'GET',
@@ -30,7 +26,7 @@ describe('API', () => {
     let body = await response.json();
     expect(body).toEqual([]);
 
-    engine.addTransmitter(9999, new URL('http://whip/dummy'));
+    await engine.addTransmitter(9999, new URL('http://whip/dummy'));
     response = await app.inject({
       method: 'GET',
       url: '/api/v1/tx'
@@ -44,6 +40,7 @@ describe('API', () => {
   });
 
   test('can create a new transmitter', async () => {
+    const engine = new Engine();
     const app = api({ engine });
     const response = await app.inject({
       method: 'POST',
@@ -56,5 +53,34 @@ describe('API', () => {
     });
     expect(response.statusCode).toEqual(201);
     expect(engine.getAllTransmitters().length).toEqual(1);
+  });
+
+  test('can return a specific transmitter', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    await engine.addTransmitter(9191, new URL('http://whip/dummy'));
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/tx/9191'
+    });
+    expect(response.statusCode).toEqual(200);
+    const body = await response.json();
+    expect(body.port).toEqual(9191);
+    expect(body.whipUrl).toEqual('http://whip/dummy');    
+  });
+
+  test('can delete a transmitter', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    await engine.addTransmitter(9191, new URL('http://whip/dummy'));
+    expect(engine.getTransmitter(9191)).toBeDefined();
+    
+    const response = await app.inject({
+      method: 'DELETE',
+      url: '/api/v1/tx/9191'
+    });
+    expect(response.statusCode).toEqual(204);
+    const tx = engine.getTransmitter(9191);
+    expect(tx).toBeUndefined();
   });
 });

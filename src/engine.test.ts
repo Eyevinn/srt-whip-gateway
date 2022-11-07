@@ -47,4 +47,11 @@ describe('Engine', () => {
     await engine.addTransmitter(3456, new URL('https://whip/channel/dummy'));
     expect(engine.getAllTransmitters().length).toEqual(3);
   });
+
+  test('can get a specific transmitter', async () => {
+    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'));
+    const tx = engine.getTransmitter(1234);
+    expect(tx.getPort()).toEqual(1234);
+    expect(tx.getWhipUrl().toString()).toEqual('https://whip/channel/dummy');
+  });
 });

@@ -10,7 +10,6 @@ export interface ApiEngineOpts {
 }
 
 const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) => {
-  const engine = opts.engine;
   let apiKey = '';
   if (opts.apiKey) {
     apiKey = opts.apiKey;
@@ -36,7 +35,7 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     },
     async (request, reply) => {
       try {
-        const transmitters = engine.getAllTransmitters();
+        const transmitters = opts.engine.getAllTransmitters();
         const body = [];
         transmitters.forEach(tx => {
           body.push(tx.getObject());
@@ -49,12 +48,60 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     }
   );
 
-  fastify.post<{ Body: Tx, Reply: Tx|string }>(
-    '/tx',
+  fastify.get<{ Params: { port: string }, Reply: Tx|string }>(
+    '/tx/:port',
     {
       schema: {
         response: {
-          201: Tx,
+          200: Tx,
+          500: Type.String()
+        }
+      }
+    },
+    async (request, reply) => {
+      try {
+        const port = parseInt(request.params.port, 10);
+        const tx = opts.engine.getTransmitter(port);
+        if (!tx) {
+          reply.code(404).send(`No transmitter for port ${port} was found`);
+          return;
+        }
+        reply.code(200).send(tx.getObject());
+      } catch (e) {
+        console.error(e);
+        reply.code(500).send('Exception thrown when trying to get a transmitter');
+      }
+    }
+  );
+
+  fastify.delete<{ Params: { port: string }, Reply: string }>(
+    '/tx/:port',
+    {
+      schema: {
+        response: {
+          500: Type.String(),
+        }
+      }
+    },
+    async (request, reply) => {
+      try {
+        const port = parseInt(request.params.port, 10);
+        opts.engine.removeTransmitter(port);
+        reply.code(204);
+      } catch (e) {
+        console.error(e);
+        reply.code(500).send('Exception thrown when trying to delete a transmitter');
+      }
+    }
+  )
+
+  fastify.post<{ Body: Tx, Reply: string }>(
+    '/tx',
+    {
+      schema: {
+        body: Tx,
+        response: {
+          201: Type.String(),
           500: Type.String()
         }
       }
@@ -62,14 +109,15 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     async (request, reply) => {
       try {
         const txObject = request.body;
-        const tx = await engine.addTransmitter(txObject.port, new URL(txObject.whipUrl));
-        reply.code(201).send(tx.getObject());
+        await opts.engine.addTransmitter(txObject.port, new URL(txObject.whipUrl));
+        reply.code(201).send('created');
       } catch (e) {
         console.error(e);
         reply.code(500).send('Exception thrown when trying to add a new transmitter');
       }
     }
-  )
+  );
+
   next();
 }
 

@@ -20,12 +20,17 @@ export class Engine {
   async removeTransmitter(srtPort: number) {
     const tx = this.transmitters.get(srtPort);
     if (tx) {
-      if ([ TxStatus.STOPPED, TxStatus.FAILED ].includes(tx.getStatus())) {
+      if ([ TxStatus.STOPPED, TxStatus.FAILED, TxStatus.IDLE ].includes(tx.getStatus())) {
         this.transmitters.delete(srtPort);
       } else {
         throw new Error(`Failed to remove transmitter for port ${srtPort} as it is active`);
       }
     }
+  }
+
+  getTransmitter(srtPort: number): Transmitter {
+    const tx = this.transmitters.get(srtPort);
+    return tx;
   }
 
   getAllTransmitters(): Transmitter[] {
