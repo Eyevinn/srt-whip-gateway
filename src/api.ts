@@ -35,7 +35,7 @@ export default (opts: ApiOptions) => {
   api.register(swaggerUI, {
     routePrefix: '/api/docs'
   });
-    
+
   api.register(ApiEngine, {
     prefix: '/api/v1',
     engine: opts.engine,
