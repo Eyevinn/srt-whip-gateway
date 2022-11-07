@@ -1,10 +1,10 @@
 import { Static, Type } from '@sinclair/typebox'
 
 export enum TxStatus {
-  IDLE,
-  RUNNING,
-  STOPPED,
-  FAILED
+  IDLE = 'idle',
+  RUNNING = 'running',
+  STOPPED = 'stopped',
+  FAILED = 'failed'
 }
 
 export const Tx = Type.Object({

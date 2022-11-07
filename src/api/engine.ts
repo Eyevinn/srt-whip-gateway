@@ -141,6 +141,9 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         if (request.body.desired === TxStatus.RUNNING) {
           await tx.start();
           reply.code(200).send('Transmitter started');
+        } else if (request.body.desired === TxStatus.STOPPED) {
+          await tx.stop({ doAwait: true });
+          reply.code(200).send('Transmitter stopped');
         }
       } catch (e) {
         console.error(e);

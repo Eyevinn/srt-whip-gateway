@@ -122,4 +122,33 @@ describe('API', () => {
     expect(body.status).toEqual(TxStatus.RUNNING);
     clearTimeout(t);
   });
+
+  test('can stop a transmitter that is active', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    const mockSpawn = MockSpawn();
+    let t;
+    mockSpawn.setDefault((cb) => {
+      // Exit 1 after 2 sec
+      t = setTimeout(() => { return cb(1); }, 2000);
+    });
+    mockSpawn.setSignals({ 'SIGKILL': true });
+    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), mockSpawn);
+    await tx.start();
+    let response = await app.inject({
+      method: 'PUT',
+      url: '/api/v1/tx/1234/state',
+      payload: {
+        desired: TxStatus.STOPPED
+      }
+    });
+    expect(response.statusCode).toEqual(200);
+    response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/tx/1234'
+    });
+    const body = await response.json();
+    expect(body.status).toEqual(TxStatus.STOPPED);
+    clearTimeout(t);
+  });
 });
