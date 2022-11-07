@@ -2,7 +2,7 @@ import { FastifyPluginCallback } from "fastify";
 import { Type } from '@sinclair/typebox'
 
 import { Engine } from "../engine";
-import { Tx } from "../types";
+import { Tx, TxStatus, TxStateChange } from "../types";
 
 export interface ApiEngineOpts {
   engine: Engine;
@@ -121,6 +121,33 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
       }
     }
   );
+
+  fastify.put<{ Params: { port: string }, Body: TxStateChange, Reply: string }>(
+    '/tx/:port/state',
+    {
+      schema: {
+        description: 'Change state of a transmitter',
+        body: TxStateChange,
+        response: {
+          200: Type.String(),
+          500: Type.String(),
+        }
+      }
+    },
+    async (request, reply) => {
+      try {
+        const port = parseInt(request.params.port, 10);
+        const tx = opts.engine.getTransmitter(port);
+        if (request.body.desired === TxStatus.RUNNING) {
+          await tx.start();
+          reply.code(200).send('Transmitter started');
+        }
+      } catch (e) {
+        console.error(e);
+        reply.code(500).send('Exception thrown when trying to change state of a transmitter');
+      }
+    }
+  )
 
   next();
 }

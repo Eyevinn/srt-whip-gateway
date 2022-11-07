@@ -1,3 +1,5 @@
+import MockSpawn from 'mock-spawn';
+
 import api from "./api";
 import { Engine } from "./engine";
 import { TxStatus } from "./types";
@@ -92,5 +94,32 @@ describe('API', () => {
       url: '/api/docs'
     });
     expect(response.statusCode).toEqual(302);
+  });
+
+  test('can start a transmitter', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    const mockSpawn = MockSpawn();
+    let t;
+    mockSpawn.setDefault((cb) => {
+      // Exit 1 after 2 sec
+      t = setTimeout(() => { return cb(1); }, 2000);
+    });
+    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), mockSpawn);
+    let response = await app.inject({
+      method: 'PUT',
+      url: '/api/v1/tx/1234/state',
+      payload: {
+        desired: TxStatus.RUNNING
+      }
+    });
+    expect(response.statusCode).toEqual(200);
+    response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/tx/1234'
+    });
+    const body = await response.json();
+    expect(body.status).toEqual(TxStatus.RUNNING);
+    clearTimeout(t);
   });
 });

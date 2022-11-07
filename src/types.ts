@@ -13,3 +13,8 @@ export const Tx = Type.Object({
   status: Type.Enum(TxStatus)
 });
 export type Tx = Static<typeof Tx>;
+
+export const TxStateChange = Type.Object({
+  desired: Type.Enum(TxStatus)
+});
+export type TxStateChange = Static<typeof TxStateChange>;
