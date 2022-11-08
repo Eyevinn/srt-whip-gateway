@@ -1,6 +1,6 @@
 import { Tx, TxStatus } from '../types';
 
-const API_URL = "http://localhost:3000/api/v1/tx";
+const API_URL = "http://localhost:3000/api/v1/tx" || process.env.API_URL;
 
 export async function getAllTransmitters(): Promise<Tx[]> {
   const response = await fetch(API_URL);
@@ -50,5 +50,14 @@ export async function toggleState(srtPort: number) {
     if (!update.ok) {
       console.error(await response.text());
     }
+  }
+}
+
+export async function removePort(srtPort: number) {
+  const response = await fetch(API_URL + "/" + srtPort, {
+    method: "DELETE"
+  });
+  if (!response.ok) {
+    console.error(await response.text());
   }
 }

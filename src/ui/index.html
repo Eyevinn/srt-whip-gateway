@@ -35,6 +35,7 @@
         padding: 15px 32px;
         border-radius: 4px;
         transition-duration: 0.4s;
+        position: relative;
       }
       section#ports button span.srtPort {
         font-size: 2rem;
@@ -80,6 +81,19 @@
       }
       section#ports button.failed:hover {
         background-color: #FFFF99;
+      }
+      section#ports a.remove {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        color: white;
+        background-color: black;
+        border: solid 1px;
+        border-radius: 4px;
+        padding: 2px;
+      }
+      section#ports a.remove:hover {
+        border: solid 1px black;        
       }
     </style>
     <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">

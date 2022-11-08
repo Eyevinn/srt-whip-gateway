@@ -12,6 +12,7 @@ async function updateTransmitters() {
       element = document.createElement('button');
       element.id = elementId;
       portSection.appendChild(element);
+
       element.addEventListener('click', async (event) => {
         const btn = <HTMLButtonElement>event.target;
         const port = parseInt(btn.id.split("-")[1], 10);
@@ -23,6 +24,19 @@ async function updateTransmitters() {
       + `<a class="whipUrl" href="${tx.whipUrl}">WHIP URL</a>`
       + `<p class="state">${tx.status}</p>`;
     element.className = tx.status;
+    const removeBtn = document.createElement('a');
+    removeBtn.className = 'remove';
+    removeBtn.innerHTML = 'X';
+    element.appendChild(removeBtn);
+    removeBtn.addEventListener('click', async (event) => {
+      event.stopPropagation();
+      const btn = <HTMLAnchorElement>event.target;
+      const portElement = <HTMLButtonElement>btn.parentElement;
+      const port = parseInt(portElement.id.split("-")[1], 10);
+      await client.removePort(port);
+      portSection.removeChild(portElement);
+    });
+
   });
 }
 
