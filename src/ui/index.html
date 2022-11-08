@@ -24,6 +24,63 @@
         text-align: center;
         font-size: 0.8em;
       }
+      section#ports {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 5px;
+      }
+      section#ports button {
+        aspect-ratio: 1;
+        text-align: center;
+        padding: 15px 32px;
+        border-radius: 4px;
+        transition-duration: 0.4s;
+      }
+      section#ports button span.srtPort {
+        font-size: 2rem;
+      }
+      section#ports button a.whipUrl {
+        margin-top: 10px;
+        font-size: 0.7rem;
+        color: black;
+      }
+      section#ports button p.state {
+        margin-top: 5px;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+      section#ports button.idle {
+        background-color: white;
+        color: black;
+        border: 2px solid #4CAF50;
+      }
+      section#ports button.idle:hover {
+        background-color: #4CAF50; /* Green */
+        color: white;
+      }
+      section#ports button.stopped {
+        background-color: white;
+        color: black;
+        border: 2px solid #4CAF50;
+      }
+      section#ports button.stopped:hover {
+        background-color: #4CAF50; /* Green */
+        color: white;
+      }
+      section#ports button.running {
+        background-color: #DC143C;
+      }
+      section#ports button.running:hover {
+        background-color: #8B0000;
+      }
+      section#ports button.failed {
+        border: 2px solid #FFFF99;
+        background-color: white;
+        color: black;
+      }
+      section#ports button.failed:hover {
+        background-color: #FFFF99;
+      }
     </style>
     <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">    
@@ -36,8 +93,13 @@
       </picture>
       <h1>SRT WHIP Gateway</h1>
     </header>
+    <section id="ports"></section>
     <section>
-      
+      <label for="newSrtPort">SRT Port:</label>
+      <input type="text" size="6" id="newSrtPort">
+      <label for="newWhipUrl">WHIP URL:</label>
+      <input type="text" size="50" id="newWhipUrl" value="http://localhost:8200/api/v2/whip/sfu-broadcaster?channelId=test">
+      <button id="addTransmitter">Add</button>
     </section>
     <footer>
       <p>By <a target="_blank" href="https://www.eyevinn.se">Eyevinn Technology AB</a> and it is <a target="_blank" href="https://github.com/Eyevinn/srt-whip-gateway">open source</a></p>

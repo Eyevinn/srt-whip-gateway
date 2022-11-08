@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --project ./",
     "build:ui": "parcel build src/ui/index.html",
-    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node --inspect ./dist/server.js\"",
+    "dev": "NODE_ENV=development tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node --inspect ./dist/server.js\"",
     "dev:ui": "parcel -p 1234 --no-cache src/ui/index.html",
     "server": "node ./dist/server.js",
     "start": "npm run server",
