@@ -25,7 +25,7 @@
   "contributors": [
     "Jonas Birmé <jonas.birme@eyevinn.se> (Eyevinn Technology AB)"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/jest": "^29.2.1",
     "@types/node": "^18.11.9",
