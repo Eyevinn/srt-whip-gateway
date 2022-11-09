@@ -1,0 +1,11 @@
+--- node_modules/lightningcss/node/index.js	2022-11-07 21:40:07.000000000 +0100
++++ lightningcss.js	2022-11-09 19:05:01.000000000 +0100
+@@ -18,7 +18,7 @@
+   try {
+     module.exports = require(`lightningcss-${parts.join('-')}`);
+   } catch (err) {
+-    module.exports = require(`../lightningcss.${parts.join('-')}.node`);
++    module.exports = require(`../../lightningcss-${parts.join('-')}/lightningcss.${parts.join('-')}.node`);
+   }
+ }
+ 
