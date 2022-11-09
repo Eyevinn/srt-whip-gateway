@@ -16,13 +16,15 @@ A transmitter is an SRT receiver and WHIP encoder based on the `whip-mpegts` [co
 To run the latest version of SRT WHIP Gateway.
 
 ```
-docker run -d -p 3000:3000 -p 9000-9999:9000-9999/udp eyevinntechnology/srt-whip
+docker run -d -p 3000:3000 -p 9000-9999:9000-9999/udp \
+  eyevinntechnology/srt-whip
 ```
 
 Run a specific version of SRT WHIP Gateway.
 
 ```
-docker run -d -p 3000:3000 -p 9000-9999:9000-9999/udp eyevinntechnology/srt-whip:<version number>
+docker run -d -p 3000:3000 -p 9000-9999:9000-9999/udp \
+  eyevinntechnology/srt-whip:<version number>
 ```
 
 Once the container is up and running you can access the API at `http://localhost:3000/api/docs` and the Web GUI at `http://localhost:3000/ui`.
