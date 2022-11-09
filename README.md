@@ -51,6 +51,15 @@ To stop a running transmitter (indicated by red color) you click on the red area
 
 To remove a transmitter click on the X in the top right corner of the transmitter.
 
+## Contributing
+
+If you're interested in contributing to the project:
+
+- We welcome all people who want to contribute in a healthy and constructive manner within our community. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](docs/CODE_OF_CONDUCT.md).
+- If you are looking to make a code change first learn how to setup your local environment in our [Developer guide](docs/developer.md). Then create a Pull Request with suggested changes.
+- Report, triage bugs or suggest enhancements.
+- Help others by answering questions.
+
 ## License (Apache-2.0)
 
 ```
