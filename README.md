@@ -1,5 +1,5 @@
 # SRT-WHIP GATEWAY
-> *Open Source SRT WHIP Gateway
+> *Open Source SRT WHIP Gateway*
 
 [![Slack](http://slack.streamingtech.se/badge.svg)](http://slack.streamingtech.se)
 
