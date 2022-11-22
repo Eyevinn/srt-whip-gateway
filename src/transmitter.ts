@@ -6,13 +6,15 @@ import { Tx, TxStatus } from './types';
 export class Transmitter {
   private srtPort: number;
   private whipURL: URL;
+  private passThroughURL: URL;
   private status: TxStatus;
   private processSpawner;
   private process;
 
-  constructor(srtPort: number, whipUrl: URL, processSpawner?) {
+  constructor(srtPort: number, whipUrl: URL, passThroughUrl?: URL, processSpawner?) {
     this.srtPort = srtPort;
     this.whipURL = whipUrl;
+    this.passThroughURL = passThroughUrl;
     this.status = TxStatus.IDLE;
     this.process = undefined;
 
@@ -23,6 +25,7 @@ export class Transmitter {
     return {
       port: this.srtPort,
       whipUrl: this.whipURL.toString(),
+      passThroughUrl: this.passThroughURL ? this.passThroughURL.toString() : undefined,
       status: this.status
     }
   }
@@ -35,6 +38,10 @@ export class Transmitter {
     return this.whipURL;
   }
 
+  getPassThroughUrl(): URL {
+    return this.passThroughURL;
+  }
+
   getStatus(): TxStatus {
     return this.status;
   }
@@ -42,12 +49,19 @@ export class Transmitter {
   async start() {
     logger.info(`[${this.srtPort}]: Starting transmission to ${this.whipURL.href}`);
 
-    this.process = this.processSpawner('whip-mpegts', [
+    const opts = [
       '-a', '0.0.0.0',
       '-p', this.srtPort,
       '-u', this.whipURL.href,
       '-s'
-    ]);
+    ];
+    if (this.passThroughURL) {
+      opts.push(
+        '-r', this.passThroughURL.host,
+        '-o', this.passThroughURL.port.toString()
+      );
+    }
+    this.process = this.processSpawner('whip-mpegts', opts);
     this.status = TxStatus.RUNNING;
     logger.info(`[${this.srtPort}]: Transmitter is running`);
 
