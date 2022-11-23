@@ -17,9 +17,9 @@ A transmitter is an SRT receiver and WHIP encoder based on the `whip-mpegts` [co
 
 ## Supported input and output formats
 
-| IN (SRT/MPEG-TS)  | UDP (MPEG-TS) | SRT (MPEG-TS | WHIP (SRTP) |
-| ----------------- | ------------- | ------------ | ----------- |
-| AVC/AAC           | AVC/AAC       | AVC/AAC      | VP8/OPUS    |
+| IN (SRT/MPEG-TS)  | UDP (MPEG-TS) | SRT (MPEG-TS) | WHIP (SRTP) |
+| ----------------- | ------------- | ------------  | ----------- |
+| AVC/AAC           | AVC/AAC       | AVC/AAC       | VP8/OPUS    |
 | HEVC/AAC          | HEVC/AAC      | HEVC/AAC      | VP8/OPUS    |
 
 ## Run SRT WHIP Gateway
