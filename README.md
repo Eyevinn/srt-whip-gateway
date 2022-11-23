@@ -3,9 +3,13 @@
 
 [![Slack](http://slack.streamingtech.se/badge.svg)](http://slack.streamingtech.se)
 
-A Docker container to receive MPEG-TS over SRT and stream to a WHIP compatible endpoint for WebRTC based broadcast distribution and optionally restreamed to an SRT ingest endpoint for HTTP-based distribution.
+A Docker container to receive MPEG-TS over SRT and stream to a WHIP compatible endpoint for WebRTC based broadcast distribution.
 
-![System Diagram](docs/srt_whip_gw.png) ![System Diagram Restream](docs/srt_whip_gw_passthrough.png)
+![System Diagram](docs/srt_whip_gw.png)
+
+The receiving MPEG-TS can be restreamed to an SRT ingest endpoint for HTTP-based distribution in addition.
+
+![System Diagram Restream](docs/srt_whip_gw_passthrough.png)
 
 A transmitter is an SRT receiver and WHIP encoder based on the `whip-mpegts` [command line tool](https://github.com/Eyevinn/whip-mpegts). Each transmitter has an configured SRT port in listener mode and configured for a specific WHIP URL. The transmitters can be managed via the REST API or the Web GUI.
 
