@@ -34,7 +34,7 @@ describe('Engine', () => {
       // Exit 1 after 2 sec
       t = setTimeout(() => { return cb(1); }, 2000);
     });
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), mockSpawn);
+    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
     await tx.start();
     await tx.waitFor({ desiredStatus: [ TxStatus.RUNNING ]});
     await expect(engine.removeTransmitter(1234)).rejects.toThrow();

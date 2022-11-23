@@ -113,7 +113,9 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     async (request, reply) => {
       try {
         const txObject = request.body;
-        await opts.engine.addTransmitter(txObject.port, new URL(txObject.whipUrl));
+        await opts.engine.addTransmitter(txObject.port, 
+          new URL(txObject.whipUrl), 
+          txObject.passThroughUrl ? new URL(txObject.passThroughUrl) : undefined);
         reply.code(201).send('created');
       } catch (e) {
         console.error(e);

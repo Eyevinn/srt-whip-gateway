@@ -57,6 +57,25 @@ describe('API', () => {
     expect(engine.getAllTransmitters().length).toEqual(1);
   });
 
+  test('can create a new transmitter with passthrough url', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/v1/tx',
+      payload: {
+        port: 9898,
+        whipUrl: 'http://whip/dummy',
+        passThroughUrl: 'srt://127.0.0.1:9899',
+        status: TxStatus.IDLE
+      }
+    });
+    expect(response.statusCode).toEqual(201);
+    expect(engine.getAllTransmitters().length).toEqual(1);
+    const tx = engine.getTransmitter(9898);
+    expect(tx.getPassThroughUrl().toString()).toEqual('srt://127.0.0.1:9899');
+  });
+
   test('can return a specific transmitter', async () => {
     const engine = new Engine();
     const app = api({ engine });
@@ -68,8 +87,24 @@ describe('API', () => {
     expect(response.statusCode).toEqual(200);
     const body = await response.json();
     expect(body.port).toEqual(9191);
-    expect(body.whipUrl).toEqual('http://whip/dummy');    
+    expect(body.whipUrl).toEqual('http://whip/dummy');
+    expect(body.passThroughUrl).not.toBeDefined();
   });
+
+  test('can return a specific transmitter that has a passthrough url', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    await engine.addTransmitter(9191, new URL('http://whip/dummy'), new URL('srt://dummy:1234'));
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/tx/9191'
+    });
+    expect(response.statusCode).toEqual(200);
+    const body = await response.json();
+    expect(body.port).toEqual(9191);
+    expect(body.whipUrl).toEqual('http://whip/dummy');
+    expect(body.passThroughUrl).toBeDefined();
+  });  
 
   test('can delete a transmitter', async () => {
     const engine = new Engine();
@@ -105,7 +140,7 @@ describe('API', () => {
       // Exit 1 after 2 sec
       t = setTimeout(() => { return cb(1); }, 2000);
     });
-    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), mockSpawn);
+    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
     let response = await app.inject({
       method: 'PUT',
       url: '/api/v1/tx/1234/state',
@@ -133,7 +168,7 @@ describe('API', () => {
       t = setTimeout(() => { return cb(1); }, 2000);
     });
     mockSpawn.setSignals({ 'SIGKILL': true });
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), mockSpawn);
+    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
     await tx.start();
     let response = await app.inject({
       method: 'PUT',
