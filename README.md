@@ -44,7 +44,7 @@ Once the container is up and running you can access the API at `http://localhost
 
 ### Add a transmitter
 
-To add a transmitter enter the `SRT Port` to listen to. If you have followed the above container running instructions you can choose a port number between 9000 and 9999. Then enter the `WHIP Url` to the WHIP endpoint you want to stream to. Then press `Add` button.
+To add a transmitter enter the `SRT Port` to listen to. If you have followed the above container running instructions you can choose a port number between 9000 and 9999. Then enter the `WHIP Url` to the WHIP endpoint you want to stream to. If you wish to also restream to an additional SRT input then add the SRT-url (`srt://<ip>:<port>`) in the `SRT Restream URL` input field. Then press `Add` button.
 
 ### Start transmitter
 
