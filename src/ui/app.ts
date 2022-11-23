@@ -21,7 +21,8 @@ async function updateTransmitters() {
       });
     }
     element.innerHTML = `<span class="srtPort">${tx.port}</span><br>` 
-      + `<a class="whipUrl" href="${tx.whipUrl}">WHIP URL</a>`
+      + `<a class="whipUrl" href="${tx.whipUrl}">WHIP</a>`
+      + (tx.passThroughUrl ? ` <a class="srtUrl" href="${tx.passThroughUrl}">SRT</a>` : '')
       + `<p class="state">${tx.status}</p>`;
     element.className = tx.status;
     const removeBtn = document.createElement('a');
@@ -47,8 +48,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   addTransmitterButton.addEventListener('click', async () => {
     const srtPort = document.querySelector<HTMLInputElement>("#newSrtPort").value;
     const whipUrl = document.querySelector<HTMLInputElement>("#newWhipUrl").value;
+    const restreamUrl = document.querySelector<HTMLInputElement>("#restreamUrl").value;
 
-    await client.addTransmitter(parseInt(srtPort, 10), whipUrl);
+    await client.addTransmitter(parseInt(srtPort, 10), whipUrl, restreamUrl);
     await updateTransmitters();
   });
 });

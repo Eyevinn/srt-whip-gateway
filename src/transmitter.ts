@@ -57,7 +57,7 @@ export class Transmitter {
     ];
     if (this.passThroughURL) {
       opts.push(
-        '-r', this.passThroughURL.host,
+        '-r', this.passThroughURL.hostname,
         '-o', this.passThroughURL.port.toString()
       );
     }

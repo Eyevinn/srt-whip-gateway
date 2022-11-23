@@ -45,6 +45,11 @@
         font-size: 0.7rem;
         color: black;
       }
+      section#ports button a.srtUrl {
+        margin-top: 10px;
+        font-size: 0.7rem;
+        color: black;
+      }
       section#ports button p.state {
         margin-top: 5px;
         text-transform: uppercase;
@@ -95,6 +100,12 @@
       section#ports a.remove:hover {
         border: solid 1px black;        
       }
+      div#output {
+        background-color: #ddd;
+        padding: 5px;
+        margin: 2px;
+        border-radius: 5px;
+      }
     </style>
     <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">    
@@ -109,10 +120,16 @@
     </header>
     <section id="ports"></section>
     <section>
-      <label for="newSrtPort">SRT Port:</label>
-      <input type="text" size="6" id="newSrtPort">
-      <label for="newWhipUrl">WHIP URL:</label>
-      <input type="text" size="50" id="newWhipUrl" value="http://localhost:8200/api/v2/whip/sfu-broadcaster?channelId=test">
+      <div>
+        <label for="newSrtPort">SRT Port:</label>
+        <input type="text" size="6" id="newSrtPort">
+        <label for="newWhipUrl">WHIP URL:</label>
+        <input type="text" size="60" id="newWhipUrl" value="http://localhost:8200/api/v2/whip/sfu-broadcaster?channelId=test">
+      </div>
+      <div id="output">
+        <label for="restreamUrl">SRT Restream URL:</label>
+        <input type="text" size="70" id="restreamUrl" value="">
+      </div>
       <button id="addTransmitter">Add</button>
     </section>
     <footer>

@@ -11,14 +11,18 @@ export async function getAllTransmitters(): Promise<Tx[]> {
   return [];
 }
 
-export async function addTransmitter(srtPort: number, whipUrl: string) {
+export async function addTransmitter(srtPort: number, whipUrl: string, restreamUrl?: string) {
+  const txObject = {
+    port: srtPort,
+    whipUrl: whipUrl,
+    status: TxStatus.IDLE
+  };
+  if (restreamUrl) {
+    txObject.passThroughUrl = restreamUrl;
+  }
   const response = await fetch(API_URL, {
     method: "POST",
-    body: JSON.stringify({
-      port: srtPort,
-      whipUrl: whipUrl,
-      status: TxStatus.IDLE
-    }),
+    body: JSON.stringify(txObject),
     headers: {
       'Content-Type': 'application/json'
     }
