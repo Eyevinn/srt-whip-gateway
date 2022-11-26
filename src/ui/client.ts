@@ -1,6 +1,15 @@
 import { Tx, TxStatus } from '../types';
 
-const API_URL = "http://localhost:3000/api/v1/tx" || process.env.API_URL;
+let API_URL: string;
+
+const params = new URLSearchParams(window.location.search);
+const apiUrl = params.get('apiUrl');
+
+if (apiUrl) {
+  API_URL = apiUrl;
+} else {
+  API_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/v1/tx`;
+}
 
 export async function getAllTransmitters(): Promise<Tx[]> {
   const response = await fetch(API_URL);
