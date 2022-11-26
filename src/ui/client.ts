@@ -2,8 +2,11 @@ import { Tx, TxStatus } from '../types';
 
 let API_URL: string;
 
-if (process.env.API_URL) {
-  API_URL = process.env.API_URL;
+const params = new URLSearchParams(window.location.search);
+const apiUrl = params.get('apiUrl');
+
+if (apiUrl) {
+  API_URL = apiUrl;
 } else {
   API_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/v1/tx`;
 }
