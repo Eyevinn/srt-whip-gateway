@@ -25,6 +25,7 @@ RUN apt-get install -y nodejs
 WORKDIR /app
 COPY --from=0 /src/dist ./dist
 COPY --from=0 /src/package.json ./
+COPY --from=0 /src/package-lock.json ./
 RUN npm install --omit=dev
 RUN cp ./whip-mpegts /usr/bin/
 
