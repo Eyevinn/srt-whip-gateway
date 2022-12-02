@@ -16,9 +16,13 @@ server.register(gui, {
 server.get('/ui/', (req, reply) => {
   reply.sendFile('index.html');
 });
-server.listen({ port: 3000, host: '0.0.0.0' }, (err) => {
+
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+
+server.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
   }
+  console.log(address);
 });
