@@ -1,0 +1,213 @@
+{
+	"info": {
+		"_postman_id": "20c822b1-a08f-40f2-bc3e-acb060237feb",
+		"name": "SRT-GATEWAY",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14844633"
+	},
+	"item": [
+		{
+			"name": "List all available transmitters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/tx",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tx"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create transmitter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"port\": 9995,\n  \"whipUrl\": \"http://ingest:8200/api/v2/whip/sfu-broadcaster?channelId=srt\",\n  \"passThroughUrl\": \"\",\n  \"status\": \"idle\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/tx",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tx"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete transmitter",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/tx/:port",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tx",
+						":port"
+					],
+					"variable": [
+						{
+							"key": "port",
+							"value": "9995"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get transmitter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/tx/:port",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tx",
+						":port"
+					],
+					"variable": [
+						{
+							"key": "port",
+							"value": "9995"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start Transmitter",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    desired: {{}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/tx/:port/state",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tx",
+						":port",
+						"state"
+					],
+					"variable": [
+						{
+							"key": "port",
+							"value": "9995"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop Transmitter",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"desired\": \"stopped\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/tx/:port/state",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tx",
+						":port",
+						"state"
+					],
+					"variable": [
+						{
+							"key": "port",
+							"value": "9995"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
