@@ -1,6 +1,6 @@
 {
   "name": "@eyevinn/srt-whip-gateway",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "SRT WHIP Gateway Service",
   "main": "dist/server.js",
   "scripts": {
