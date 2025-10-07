@@ -9,6 +9,13 @@ export interface ApiEngineOpts {
   apiKey?: string;
 }
 
+
+const ParamsPort = Type.Object({
+  port: Type.Integer({
+    description: 'SRT port'
+  })
+})
+
 const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) => {
   let apiKey = '';
   if (opts.apiKey) {
@@ -54,6 +61,7 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     {
       schema: {
         description: 'Obtain a transmitter resource for an SRT port',
+        params: ParamsPort,
         response: {
           200: Tx,
           500: Type.String({ description: 'Error message' })
@@ -81,6 +89,7 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     {
       schema: {
         description: 'Remove a transmitter for an SRT port',
+        params: ParamsPort,
         response: {
           500: Type.String({ description: 'Error message' }),
         }
@@ -129,6 +138,7 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     {
       schema: {
         description: 'Change state of a transmitter',
+        params: ParamsPort,
         body: TxStateChange,
         response: {
           200: Type.String(),
