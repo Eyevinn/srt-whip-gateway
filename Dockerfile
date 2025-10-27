@@ -5,7 +5,7 @@ FROM ubuntu:latest
 ##
 RUN apt-get update
 RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y make gcc g++ patch
 
@@ -16,17 +16,20 @@ RUN patch node_modules/lightningcss/node/index.js < lightningcss.patch
 RUN npm run build
 RUN npm run build:ui
 
-FROM eyevinntechnology/mpegts-whip:v0.7.1
+FROM eyevinntechnology/mpegts-whip:v0.9.1
 
+RUN apt-get update
 RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 WORKDIR /app
 COPY --from=0 /src/dist ./dist
 COPY --from=0 /src/package.json ./
 COPY --from=0 /src/package-lock.json ./
+
 RUN npm install --omit=dev
+
 RUN cp ./whip-mpegts /usr/bin/
 
 ENTRYPOINT [ "npm", "start" ]
