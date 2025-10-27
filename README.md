@@ -11,9 +11,18 @@ The receiving MPEG-TS can be restreamed to an SRT ingest endpoint for HTTP-based
 
 ![System Diagram Restream](docs/srt_whip_gw_passthrough.png)
 
-A transmitter is an SRT receiver and WHIP encoder based on the `whip-mpegts` [command line tool](https://github.com/Eyevinn/whip-mpegts). Each transmitter has an configured SRT port in listener mode and configured for a specific WHIP URL. The transmitters can be managed via the REST API or the Web GUI.
+A transmitter is an SRT receiver and WHIP encoder based on the `whip-mpegts` [command line tool](https://github.com/Eyevinn/whip-mpegts). Each transmitter has a configured SRT port and can operate in either **listener mode** (default) or **caller mode**, configured for a specific WHIP URL. The transmitters can be managed via the REST API or the Web GUI.
 
 ![Screenshot of demo application](docs/screenshot.png)
+
+## Features
+
+- **SRT Listener Mode** (default): Gateway listens on a port and waits for incoming SRT connections
+- **SRT Caller Mode**: Gateway actively connects to an SRT listener endpoint
+- **Audio-Only Streaming**: Support for audio-only streams without video
+- **SRT Passthrough**: Restream incoming MPEG-TS to an additional SRT endpoint
+- **Web UI**: User-friendly interface for managing transmitters
+- **REST API**: Programmatic control via RESTful API
 
 ## Supported input and output formats
 
@@ -21,6 +30,7 @@ A transmitter is an SRT receiver and WHIP encoder based on the `whip-mpegts` [co
 | ----------------- | ------------- | ------------  | ----------- |
 | AVC/AAC           | AVC/AAC       | AVC/AAC       | VP8/OPUS    |
 | HEVC/AAC          | HEVC/AAC      | HEVC/AAC      | VP8/OPUS    |
+| AAC (audio-only)  | AAC           | AAC           | OPUS        |
 
 ## Run SRT WHIP Gateway
 
@@ -75,16 +85,56 @@ And then use the following WHIP URL in the transmitter: `http://ingest:8200/api/
 
 ### Add a transmitter
 
-To add a transmitter enter the `SRT Port` to listen to. If you have followed the above container running instructions you can choose a port number between 9000 and 9999. Then enter the `WHIP Url` to the WHIP endpoint you want to stream to. If you wish to also restream to an additional SRT input then add the SRT-url (`srt://<ip>:<port>`) in the `SRT Restream URL` input field. Then press `Add` button.
+To add a transmitter, configure the following settings:
+
+1. **SRT Port**: Enter the SRT port number (e.g., 9000-9999 if using the default Docker port mapping)
+2. **WHIP URL**: Enter the WHIP endpoint URL you want to stream to
+3. **SRT Caller Mode** (optional): Enable this checkbox to use SRT caller mode instead of listener mode
+   - When enabled, you must specify the **SRT Hostname** (e.g., `srt://hostname`)
+   - The gateway will actively connect to the SRT endpoint instead of waiting for incoming connections
+4. **No Video (Audio Only)** (optional): Enable this checkbox for audio-only streaming
+5. **SRT Restream URL** (optional): Add an SRT URL (`srt://<ip>:<port>`) to restream to an additional SRT endpoint
+
+Then press the `Add Transmitter` button.
 
 ### Start transmitter
 
 A green border indicates that the transmitter is `idle` and can be started. Click anywhere in the white area within the green border to start a transmitter. Once the transmitter is running the box will turn red to indicate that it is a running transmitter.
 
-When the transmitter is running you can start your video software to stream to the designated SRT port that you have configured for this transmitter. The below `ffmpeg` command line illustrates an example.
+When the transmitter is running, you can start your video software to stream. The approach differs based on the SRT mode:
 
+#### Listener Mode (Default)
+
+When using listener mode, the gateway waits for incoming SRT connections. Start streaming to the configured SRT port:
+
+```bash
+# Stream video with audio
+ffmpeg -re -i video.mp4 -c:v libx264 -c:a aac -f mpegts "srt://localhost:9000?mode=caller"
+
+# Generate test pattern with audio
+ffmpeg -re -f lavfi -i testsrc=size=1280x720:rate=25 -f lavfi -i sine=frequency=1000:sample_rate=48000 \
+  -c:v libx264 -preset veryfast -b:v 2000k -c:a aac -b:a 128k -f mpegts "srt://localhost:9000?mode=caller"
+
+# Audio-only stream
+ffmpeg -re -f lavfi -i sine=frequency=1000:sample_rate=48000 \
+  -c:a aac -b:a 128k -f mpegts "srt://localhost:9000?mode=caller"
 ```
-ffmpeg -re -i video.mp4 -c:v libx264 -c:a aac -f mpegts srt://localhost:9191/
+
+#### Caller Mode
+
+When using caller mode, the gateway connects to your SRT endpoint. Start an SRT listener first:
+
+```bash
+# Stream video with audio in listener mode (gateway connects to this)
+ffmpeg -re -i video.mp4 -c:v libx264 -c:a aac -f mpegts "srt://0.0.0.0:9000?mode=listener"
+
+# Generate test pattern in listener mode
+ffmpeg -re -f lavfi -i testsrc=size=1280x720:rate=25 -f lavfi -i sine=frequency=1000:sample_rate=48000 \
+  -c:v libx264 -preset veryfast -b:v 2000k -c:a aac -b:a 128k -f mpegts "srt://0.0.0.0:9000?mode=listener"
+
+# Audio-only stream in listener mode
+ffmpeg -re -f lavfi -i sine=frequency=1000:sample_rate=48000 \
+  -c:a aac -b:a 128k -f mpegts "srt://0.0.0.0:9000?mode=listener"
 ```
 
 ### Stop transmitter
@@ -93,7 +143,9 @@ To stop a running transmitter (indicated by red color) you click on the red area
 
 ### Remove transmitter
 
-To remove a transmitter click on the X in the top right corner of the transmitter.
+To remove a transmitter, click on the X in the top right corner of the transmitter.
+
+**Note:** You cannot remove a transmitter while it is in the `RUNNING` state. If you attempt to remove a running transmitter, a warning modal will appear. You must first stop the transmitter before it can be removed.
 
 ## Contributing
 

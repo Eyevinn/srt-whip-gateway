@@ -7,130 +7,350 @@
       name="description"
       content="SRT WHIP Gateway by Eyevinn Technology AB"
     />
+    <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
     <script type="module" src="./app.ts"></script>
     <style type="text/css">
+      body {
+        background-color: #000000;
+        color: #ffffff;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
       header {
         display: flex;
-        justify-content: space-evenly;
+        justify-content: center;
         align-items: center;
-        flex-wrap: wrap;
+        flex-direction: column;
+        margin-bottom: 2rem;
+        padding: 2rem 0;
+        background-color: #000000 !important;
       }
-      header>*,
-      header>:last-child {
-        padding-top: 0;
+
+      header img {
+        max-width: 180px;
         margin-bottom: 1rem;
       }
+
+      header h1 {
+        color: #FFFFFF;
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
       footer {
         text-align: center;
         font-size: 0.8em;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #333;
       }
+
+      footer a {
+        color: #5AB8FF;
+      }
+
       section#ports {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-gap: 5px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-gap: 15px;
+        margin-bottom: 2rem;
       }
+
+      @media (max-width: 768px) {
+        section#ports {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
       section#ports button {
         aspect-ratio: 1;
         text-align: center;
-        padding: 15px 32px;
-        border-radius: 4px;
-        transition-duration: 0.4s;
+        padding: 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
         position: relative;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
+
+      section#ports button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
       section#ports button span.srtPort {
         font-size: 2rem;
+        font-weight: bold;
       }
-      section#ports button a.whipUrl {
-        margin-top: 10px;
-        font-size: 0.7rem;
-        color: black;
-      }
+
+      section#ports button a.whipUrl,
       section#ports button a.srtUrl {
         margin-top: 10px;
         font-size: 0.7rem;
-        color: black;
+        display: block;
+        word-break: break-all;
       }
+
       section#ports button p.state {
-        margin-top: 5px;
+        margin-top: 8px;
         text-transform: uppercase;
         font-size: 0.7rem;
+        font-weight: bold;
       }
+
       section#ports button.idle {
-        background-color: white;
-        color: black;
+        background-color: #1a1a1a;
+        color: #ffffff;
         border: 2px solid #4CAF50;
       }
+
       section#ports button.idle:hover {
-        background-color: #4CAF50; /* Green */
+        background-color: #4CAF50;
         color: white;
       }
+
       section#ports button.stopped {
-        background-color: white;
-        color: black;
+        background-color: #1a1a1a;
+        color: #ffffff;
         border: 2px solid #4CAF50;
       }
+
       section#ports button.stopped:hover {
-        background-color: #4CAF50; /* Green */
+        background-color: #4CAF50;
         color: white;
       }
+
       section#ports button.running {
         background-color: #DC143C;
+        color: white;
+        border: 2px solid #DC143C;
       }
+
       section#ports button.running:hover {
         background-color: #8B0000;
+        border-color: #8B0000;
       }
+
       section#ports button.failed {
-        border: 2px solid #FFFF99;
-        background-color: white;
-        color: black;
+        border: 2px solid #FFA500;
+        background-color: #1a1a1a;
+        color: #FFA500;
       }
+
       section#ports button.failed:hover {
-        background-color: #FFFF99;
+        background-color: #FFA500;
+        color: #000;
       }
+
       section#ports a.remove {
         position: absolute;
-        top: 4px;
-        right: 4px;
+        top: 8px;
+        right: 8px;
         color: white;
-        background-color: black;
-        border: solid 1px;
+        background-color: #ff4444;
+        border: none;
         border-radius: 4px;
-        padding: 2px;
+        padding: 4px 8px;
+        font-weight: bold;
+        transition: background-color 0.2s;
       }
+
       section#ports a.remove:hover {
-        border: solid 1px black;        
+        background-color: #cc0000;
       }
-      div#output {
-        background-color: #ddd;
-        padding: 5px;
-        margin: 2px;
-        border-radius: 5px;
+
+      section#form-container {
+        background-color: #1a1a1a;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        border: 1px solid #333;
+      }
+
+      section#form-container h2 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        color: #5AB8FF;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #cccccc;
+        font-weight: 500;
+      }
+
+      .form-group input[type="text"],
+      .form-group input:not([type="checkbox"]) {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.75rem;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background-color: #2a2a2a;
+        color: #ffffff;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+        box-sizing: border-box !important;
+      }
+
+      .form-group input[type="text"]:focus,
+      .form-group input:not([type="checkbox"]):focus {
+        outline: none;
+        border-color: #5AB8FF;
+      }
+
+      .form-group.checkbox {
+        display: flex;
+        align-items: center;
+      }
+
+      .form-group.checkbox input[type="checkbox"] {
+        width: auto;
+        margin-right: 0.75rem;
+        cursor: pointer;
+      }
+
+      .form-group.checkbox label {
+        margin-bottom: 0;
+        cursor: pointer;
+      }
+
+      .form-group.hidden {
+        display: none;
+      }
+
+      button#addTransmitter {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #5AB8FF 0%, #7B68EE 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 1rem;
+      }
+
+      button#addTransmitter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(90, 184, 255, 0.4);
+      }
+
+      button#addTransmitter:active {
+        transform: translateY(0);
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background-color: #1a1a1a;
+        border: 2px solid #DC143C;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(220, 20, 60, 0.3);
+      }
+
+      .modal-content h2 {
+        color: #DC143C;
+        margin-top: 0;
+        margin-bottom: 1rem;
+      }
+
+      .modal-content p {
+        color: #cccccc;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-content button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #5AB8FF;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .modal-content button:hover {
+        background-color: #4a9ed9;
       }
     </style>
-    <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">    
   </head>
   <body>
+    <!-- Modal for running transmitter warning -->
+    <div id="warningModal" class="modal">
+      <div class="modal-content">
+        <h2>Cannot Remove Running Transmitter</h2>
+        <p>This transmitter is currently in <strong>RUNNING</strong> state. You must stop the transmitter before removing it.</p>
+        <p>Please click on the transmitter to stop it, then try removing it again.</p>
+        <button id="closeModal">OK</button>
+      </div>
+    </div>
+
     <header>
-      <picture>
-        <source srcset="./logo-darkmode.png" media="(prefers-color-scheme: dark)">
-        <img src="./logo-lightmode.png" />
-      </picture>
+      <img src="./logo-darkmode.png" alt="Eyevinn Logo" />
       <h1>SRT WHIP Gateway</h1>
     </header>
     <section id="ports"></section>
-    <section>
-      <div>
-        <label for="newSrtPort">SRT Port:</label>
-        <input type="text" size="6" id="newSrtPort">
-        <label for="newWhipUrl">WHIP URL:</label>
-        <input type="text" size="60" id="newWhipUrl" value="http://localhost:8200/api/v2/whip/sfu-broadcaster?channelId=test">
+    <section id="form-container">
+      <h2>Add New Transmitter</h2>
+      <div class="form-group">
+        <label for="newSrtPort">SRT Port</label>
+        <input type="text" id="newSrtPort" placeholder="e.g., 9000">
       </div>
-      <div id="output">
-        <label for="restreamUrl">SRT Restream URL:</label>
-        <input type="text" size="70" id="restreamUrl" value="">
+      <div class="form-group">
+        <label for="newWhipUrl">WHIP URL</label>
+        <input type="text" id="newWhipUrl" value="http://localhost:8200/api/v2/whip/sfu-broadcaster?channelId=test" placeholder="Enter WHIP endpoint URL">
       </div>
-      <button id="addTransmitter">Add</button>
+      <div class="form-group checkbox">
+        <input type="checkbox" id="srtCallerMode">
+        <label for="srtCallerMode">Enable SRT Caller Mode (Listener Mode by default)</label>
+      </div>
+      <div class="form-group hidden" id="srtUrlGroup">
+        <label for="srtUrl">SRT Hostname (for Caller Mode)</label>
+        <input type="text" id="srtUrl" value="" placeholder="e.g., srt://hostname">
+      </div>
+      <div class="form-group checkbox">
+        <input type="checkbox" id="noVideo">
+        <label for="noVideo">No Video (Audio Only)</label>
+      </div>
+      <div class="form-group">
+        <label for="restreamUrl">SRT Restream URL (Optional)</label>
+        <input type="text" id="restreamUrl" value="" placeholder="e.g., srt://hostname:port">
+      </div>
+      <button id="addTransmitter">Add Transmitter</button>
     </section>
     <footer>
       <p>By <a target="_blank" href="https://www.eyevinn.se">Eyevinn Technology AB</a> and it is <a target="_blank" href="https://github.com/Eyevinn/srt-whip-gateway">open source</a></p>

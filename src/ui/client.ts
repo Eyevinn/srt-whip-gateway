@@ -1,4 +1,4 @@
-import { Tx, TxStatus } from '../types';
+import { Tx, TxStatus, SrtMode } from '../types';
 
 let API_URL: string;
 
@@ -20,14 +20,21 @@ export async function getAllTransmitters(): Promise<Tx[]> {
   return [];
 }
 
-export async function addTransmitter(srtPort: number, whipUrl: string, restreamUrl?: string) {
-  const txObject = {
+export async function addTransmitter(srtPort: number, whipUrl: string, restreamUrl?: string, srtMode?: SrtMode, srtUrl?: string, noVideo?: boolean) {
+  const txObject: any = {
     port: srtPort,
     whipUrl: whipUrl,
-    status: TxStatus.IDLE
+    status: TxStatus.IDLE,
+    mode: srtMode || SrtMode.LISTENER
   };
   if (restreamUrl) {
     txObject.passThroughUrl = restreamUrl;
+  }
+  if (srtUrl) {
+    txObject.srtUrl = srtUrl;
+  }
+  if (noVideo) {
+    txObject.noVideo = noVideo;
   }
   const response = await fetch(API_URL, {
     method: "POST",

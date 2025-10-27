@@ -8,11 +8,11 @@ export class Engine {
     this.transmitters = new Map<number, Transmitter>();
   }
 
-  async addTransmitter(srtPort: number, whipUrl: URL, passThroughUrl?: URL, mockSpawn?): Promise<Transmitter> {
+  async addTransmitter(srtPort: number,  whipUrl: URL, passThroughUrl?: URL, srtMode?: number, srtUrl?: string, noVideo?: boolean, mockSpawn?, label?: string): Promise<Transmitter> {
     if (this.transmitters.get(srtPort)) {
       throw new Error(`A transmitter for port ${srtPort} already exists`);
     }
-    const transmitter = new Transmitter(srtPort, whipUrl, passThroughUrl, mockSpawn);
+    const transmitter = new Transmitter(srtPort, whipUrl, passThroughUrl, srtMode, srtUrl, noVideo, mockSpawn, label);
     this.transmitters.set(srtPort, transmitter);
     return transmitter;
   }

@@ -50,7 +50,8 @@ describe('API', () => {
       payload: {
         port: 9898,
         whipUrl: 'http://whip/dummy',
-        status: TxStatus.IDLE
+        status: TxStatus.IDLE,
+        mode: 1
       }
     });
     expect(response.statusCode).toEqual(201);
@@ -67,6 +68,7 @@ describe('API', () => {
         port: 9898,
         whipUrl: 'http://whip/dummy',
         passThroughUrl: 'srt://127.0.0.1:9899',
+        mode: 2,
         status: TxStatus.IDLE
       }
     });
@@ -136,11 +138,12 @@ describe('API', () => {
     const app = api({ engine });
     const mockSpawn = MockSpawn();
     let t;
-    mockSpawn.setDefault((cb) => {
+    mockSpawn.setDefault((cb: (exitCode: number) => void) => {
       // Exit 1 after 2 sec
       t = setTimeout(() => { return cb(1); }, 2000);
     });
-    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
+    mockSpawn.setSignals({ 'SIGKILL': true });
+    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, undefined, undefined, undefined, mockSpawn);
     let response = await app.inject({
       method: 'PUT',
       url: '/api/v1/tx/1234/state',
@@ -155,7 +158,9 @@ describe('API', () => {
     });
     const body = await response.json();
     expect(body.status).toEqual(TxStatus.RUNNING);
-    clearTimeout(t);
+    // Clean up
+    await tx.stop({ doAwait: true });
+    if (t) clearTimeout(t);
   });
 
   test('can stop a transmitter that is active', async () => {
@@ -163,12 +168,12 @@ describe('API', () => {
     const app = api({ engine });
     const mockSpawn = MockSpawn();
     let t;
-    mockSpawn.setDefault((cb) => {
+    mockSpawn.setDefault((cb: (exitCode: number) => void) => {
       // Exit 1 after 2 sec
       t = setTimeout(() => { return cb(1); }, 2000);
     });
     mockSpawn.setSignals({ 'SIGKILL': true });
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
+    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, undefined, undefined, undefined, mockSpawn);
     await tx.start();
     let response = await app.inject({
       method: 'PUT',
@@ -184,6 +189,6 @@ describe('API', () => {
     });
     const body = await response.json();
     expect(body.status).toEqual(TxStatus.STOPPED);
-    clearTimeout(t);
+    if (t) clearTimeout(t);
   });
 });

@@ -122,9 +122,14 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     async (request, reply) => {
       try {
         const txObject = request.body;
-        await opts.engine.addTransmitter(txObject.port, 
-          new URL(txObject.whipUrl), 
-          txObject.passThroughUrl ? new URL(txObject.passThroughUrl) : undefined);
+        // Remove srt:// prefix if present
+        let srtUrl = txObject.srtUrl;
+        if (srtUrl && srtUrl.startsWith('srt://')) {
+          srtUrl = srtUrl.substring(6);
+        }
+        await opts.engine.addTransmitter(txObject.port,
+          new URL(txObject.whipUrl),
+          txObject.passThroughUrl ? new URL(txObject.passThroughUrl) : undefined, txObject.mode, srtUrl, txObject.noVideo, undefined, txObject.label);
         reply.code(201).send('created');
       } catch (e) {
         console.error(e);

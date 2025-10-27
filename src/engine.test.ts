@@ -30,15 +30,18 @@ describe('Engine', () => {
   test('does not remove an active transmitter', async () => {
     const mockSpawn = MockSpawn();
     let t;
-    mockSpawn.setDefault((cb) => {
+    mockSpawn.setDefault((cb: (exitCode: number) => void) => {
       // Exit 1 after 2 sec
       t = setTimeout(() => { return cb(1); }, 2000);
     });
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
+    mockSpawn.setSignals({ 'SIGKILL': true });
+    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, undefined, undefined, undefined, mockSpawn);
     await tx.start();
     await tx.waitFor({ desiredStatus: [ TxStatus.RUNNING ]});
     await expect(engine.removeTransmitter(1234)).rejects.toThrow();
-    clearTimeout(t);
+    // Clean up the running transmitter
+    await tx.stop({ doAwait: true });
+    if (t) clearTimeout(t);
   });
 
   test('can return a list of all transmitters', async () => {
