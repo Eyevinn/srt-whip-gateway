@@ -16,7 +16,7 @@ RUN patch node_modules/lightningcss/node/index.js < lightningcss.patch
 RUN npm run build
 RUN npm run build:ui
 
-FROM eyevinntechnology/mpegts-whip:v0.10.0
+FROM eyevinntechnology/mpegts-whip:v0.7.1
 
 RUN apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
