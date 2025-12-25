@@ -82,7 +82,22 @@ export class Transmitter {
   async stop({ doAwait } : { doAwait: boolean }) {
     logger.info(`[${this.srtPort}]: Stopping transmission to ${this.whipURL.href}`);
     if (this.process) {
-      this.process.kill('SIGKILL');
+      let processExited = false;
+
+      // Clear timeout if process exits gracefully
+      this.process.once('exit', () => {
+        processExited = true;
+      });
+
+      this.process.kill('SIGINT');
+
+      // Force kill if process doesn't stop within 1 second
+      setTimeout(() => {
+        if (!processExited && this.process) {
+          logger.warn(`[${this.srtPort}]: Process did not stop gracefully, sending SIGKILL`);
+          this.process.kill('SIGKILL');
+        }
+      }, 1000);
     } else {
       this.status = TxStatus.STOPPED;
     }
