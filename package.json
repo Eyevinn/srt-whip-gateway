@@ -45,9 +45,9 @@
     "@fastify/static": "^6.5.0",
     "@fastify/swagger": "^8.1.0",
     "@fastify/swagger-ui": "^1.2.0",
-    "@fastify/type-provider-typebox": "^2.3.0",
+    "@fastify/type-provider-typebox": "^6.1.0",
     "@sinclair/typebox": "0.24.1",
-    "fastify": "^4.9.2",
+    "fastify": "^5.8.5",
     "winston": "^3.8.2"
   }
 }
