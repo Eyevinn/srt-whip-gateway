@@ -40,6 +40,22 @@ docker run -d -p 3000:3000 -p 9000-9999:9000-9999/udp \
 
 Once the container is up and running you can access the API at `http://localhost:3000/api/docs` and the Web GUI at `http://localhost:3000/ui`.
 
+### Configuration
+
+The service is configured through environment variables.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `3000` | HTTP port for the API and Web GUI |
+| `API_KEY` | _(unset)_ | If set, required in the `x-api-key` header for API requests |
+| `DATA_DIR` | `./data` | Directory where transmitter configuration is persisted |
+
+Configured transmitters (SRT port, WHIP URL and optional pass-through URL) are
+persisted to a JSON file (`transmitters.json`) under `DATA_DIR` so they survive a
+process restart. Runtime status is not persisted - a reloaded transmitter starts
+in the `idle` state and can be started again. Mount `DATA_DIR` to a durable volume
+when running in a container to retain configuration across restarts.
+
 ## Run SRT WHIP Gateway with WHIP/WHEP local
 
 To run the SRT WHIP Gateway with [WHIP/WHEP local development environment](https://github.com/Eyevinn/whip-whep) you need to attach the SRT WHIP Gateway container to the same network as the WHIP/WHEP containers are running on.
