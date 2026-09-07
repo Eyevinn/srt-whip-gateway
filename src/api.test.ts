@@ -15,6 +15,75 @@ describe('API', () => {
     expect(response.statusCode).toEqual(200);
     const body = await response.json();
     expect(body.message).toEqual('ok');
+    // Backward compatibility: docs and gui links must be preserved
+    expect(body.docs).toEqual('/api/docs');
+    expect(body.gui).toEqual('/ui');
+  });
+
+  test('healthcheck returns 200 when all transmitters are running/idle', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    const mockSpawn = MockSpawn();
+    let t;
+    mockSpawn.setDefault((cb) => {
+      // Stay running for a while so status remains RUNNING during the check
+      t = setTimeout(() => {
+        return cb(0);
+      }, 2000);
+    });
+    // One idle transmitter and one running transmitter
+    await engine.addTransmitter(7001, new URL('http://whip/idle'));
+    const tx = await engine.addTransmitter(
+      7002,
+      new URL('http://whip/running'),
+      undefined,
+      mockSpawn
+    );
+    await tx.start();
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/'
+    });
+    expect(response.statusCode).toEqual(200);
+    const body = await response.json();
+    expect(body.message).toEqual('ok');
+    expect(body.docs).toEqual('/api/docs');
+    expect(body.gui).toEqual('/ui');
+    expect(body.transmitters.total).toEqual(2);
+    expect(body.transmitters.failed).toEqual(0);
+    clearTimeout(t);
+  });
+
+  test('healthcheck returns non-2xx when a transmitter has failed', async () => {
+    const engine = new Engine();
+    const app = api({ engine });
+    const mockSpawn = MockSpawn();
+    mockSpawn.setDefault((cb) => {
+      // Exit with a non-zero code immediately to mark the transmitter FAILED
+      return cb(1);
+    });
+    const tx = await engine.addTransmitter(
+      7003,
+      new URL('http://whip/failing'),
+      undefined,
+      mockSpawn
+    );
+    await tx.start();
+    // Wait for the process 'exit' handler to flip the status to FAILED
+    await tx.waitFor({ desiredStatus: [TxStatus.FAILED] });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/'
+    });
+    expect(response.statusCode).toBeGreaterThanOrEqual(300);
+    const body = await response.json();
+    expect(body.message).toEqual('unhealthy');
+    // Backward compatibility preserved even in the unhealthy response
+    expect(body.docs).toEqual('/api/docs');
+    expect(body.gui).toEqual('/ui');
+    expect(body.transmitters.failed).toBeGreaterThanOrEqual(1);
   });
 
   test('can return a list of all transmitters', async () => {

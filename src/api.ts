@@ -42,7 +42,8 @@ export default (opts: ApiOptions) => {
     apiKey: opts.apiKey
   });
   api.register(ApiHealthcheck, {
-    prefix: '/'
+    prefix: '/',
+    engine: opts.engine
   });
 
   return api;
