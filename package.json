@@ -44,7 +44,7 @@
     "@fastify/cors": "^8.1.1",
     "@fastify/static": "^6.12.0",
     "@fastify/swagger": "^8.1.0",
-    "@fastify/swagger-ui": "^1.2.0",
+    "@fastify/swagger-ui": "^6.1.1",
     "@fastify/type-provider-typebox": "^2.3.0",
     "@sinclair/typebox": "0.24.1",
     "fastify": "^4.9.2",
