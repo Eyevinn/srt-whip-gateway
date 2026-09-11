@@ -193,11 +193,20 @@ describe('API', () => {
   test('provides swagger documentation', async () => {
     const engine = new Engine();
     const app = api({ engine });
+    // @fastify/swagger-ui v5 serves the docs UI directly at the route prefix
+    // (fastify-4 era swagger-ui v1 responded with a 302 redirect instead).
     const response = await app.inject({
       method: 'GET',
       url: '/api/docs'
     });
-    expect(response.statusCode).toEqual(302);
+    expect(response.statusCode).toEqual(200);
+    // The generated OpenAPI spec is still served under the docs route.
+    const spec = await app.inject({
+      method: 'GET',
+      url: '/api/docs/json'
+    });
+    expect(spec.statusCode).toEqual(200);
+    expect(spec.json().info.title).toEqual('SRT WHIP Gateway API');
   });
 
   test('can start a transmitter', async () => {
