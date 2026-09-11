@@ -17,19 +17,21 @@ export default (opts: ApiOptions) => {
   const api = Fastify({ ignoreTrailingSlash: true }).withTypeProvider<TypeBoxTypeProvider>();
   api.register(cors, {});
   api.register(swagger, {
-    swagger: {
+    openapi: {
       info: {
         title: 'SRT WHIP Gateway API',
         description: 'API to manage SRT/WHIP transmitters',
         version: 'v1'
       },
-      securityDefinitions: {
-        apiKey: {
-          type: 'apiKey',
-          name: 'x-api-key',
-          in: 'header'
+      components: {
+        securitySchemes: {
+          apiKey: {
+            type: 'apiKey',
+            name: 'x-api-key',
+            in: 'header'
+          }
         }
-      },
+      }
     }
   });
   api.register(swaggerUI, {
