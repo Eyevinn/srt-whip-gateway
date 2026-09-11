@@ -3,6 +3,9 @@
   "version": "0.4.0",
   "description": "SRT WHIP Gateway Service",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc --project ./",
     "build:ui": "parcel build src/ui/index.html",
