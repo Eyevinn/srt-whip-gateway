@@ -49,7 +49,7 @@
     "@fastify/swagger": "^9.8.1",
     "@fastify/swagger-ui": "^5.2.6",
     "@fastify/type-provider-typebox": "^5.2.0",
-    "@sinclair/typebox": "^0.33.24",
+    "@sinclair/typebox": "^0.34.52",
     "fastify": "^5.12.3",
     "winston": "^3.8.2"
   }
