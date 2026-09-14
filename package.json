@@ -3,6 +3,9 @@
   "version": "0.4.0",
   "description": "SRT WHIP Gateway Service",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc --project ./",
     "build:ui": "parcel build src/ui/index.html",
@@ -38,16 +41,16 @@
     "prettier": "2.7.1",
     "ts-jest": "^29.0.3",
     "tsc-watch": "^5.0.3",
-    "typescript": "^4.8.4"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@fastify/cors": "^8.1.1",
-    "@fastify/static": "^6.12.0",
-    "@fastify/swagger": "^8.1.0",
-    "@fastify/swagger-ui": "^1.2.0",
-    "@fastify/type-provider-typebox": "^2.3.0",
-    "@sinclair/typebox": "0.24.1",
-    "fastify": "^4.9.2",
+    "@fastify/cors": "^10.1.0",
+    "@fastify/static": "^8.3.0",
+    "@fastify/swagger": "^9.8.1",
+    "@fastify/swagger-ui": "^5.2.6",
+    "@fastify/type-provider-typebox": "^5.2.0",
+    "@sinclair/typebox": "^0.33.24",
+    "fastify": "^5.12.3",
     "winston": "^3.8.2"
   }
 }
