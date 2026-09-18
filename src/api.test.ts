@@ -1,8 +1,8 @@
 import MockSpawn from 'mock-spawn';
 
-import api from "./api";
-import { Engine } from "./engine";
-import { TxStatus } from "./types";
+import api from './api';
+import { Engine } from './engine';
+import { TxStatus } from './types';
 
 describe('API', () => {
   test('returns healtheck response on /', async () => {
@@ -10,7 +10,7 @@ describe('API', () => {
     const app = api({ engine });
     const response = await app.inject({
       method: 'GET',
-      url: '/'
+      url: '/',
     });
     expect(response.statusCode).toEqual(200);
     const body = await response.json();
@@ -37,13 +37,13 @@ describe('API', () => {
       7002,
       new URL('http://whip/running'),
       undefined,
-      mockSpawn
+      mockSpawn,
     );
     await tx.start();
 
     const response = await app.inject({
       method: 'GET',
-      url: '/'
+      url: '/',
     });
     expect(response.statusCode).toEqual(200);
     const body = await response.json();
@@ -67,7 +67,7 @@ describe('API', () => {
       7003,
       new URL('http://whip/failing'),
       undefined,
-      mockSpawn
+      mockSpawn,
     );
     await tx.start();
     // Wait for the process 'exit' handler to flip the status to FAILED
@@ -75,7 +75,7 @@ describe('API', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: '/'
+      url: '/',
     });
     expect(response.statusCode).toBeGreaterThanOrEqual(300);
     const body = await response.json();
@@ -91,7 +91,7 @@ describe('API', () => {
     const app = api({ engine });
     let response = await app.inject({
       method: 'GET',
-      url: '/api/v1/tx'
+      url: '/api/v1/tx',
     });
     expect(response.statusCode).toEqual(200);
     let body = await response.json();
@@ -100,7 +100,7 @@ describe('API', () => {
     await engine.addTransmitter(9999, new URL('http://whip/dummy'));
     response = await app.inject({
       method: 'GET',
-      url: '/api/v1/tx'
+      url: '/api/v1/tx',
     });
     expect(response.statusCode).toEqual(200);
     body = await response.json();
@@ -119,8 +119,8 @@ describe('API', () => {
       payload: {
         port: 9898,
         whipUrl: 'http://whip/dummy',
-        status: TxStatus.IDLE
-      }
+        status: TxStatus.IDLE,
+      },
     });
     expect(response.statusCode).toEqual(201);
     expect(engine.getAllTransmitters().length).toEqual(1);
@@ -136,8 +136,8 @@ describe('API', () => {
         port: 9898,
         whipUrl: 'http://whip/dummy',
         passThroughUrl: 'srt://127.0.0.1:9899',
-        status: TxStatus.IDLE
-      }
+        status: TxStatus.IDLE,
+      },
     });
     expect(response.statusCode).toEqual(201);
     expect(engine.getAllTransmitters().length).toEqual(1);
@@ -151,7 +151,7 @@ describe('API', () => {
     await engine.addTransmitter(9191, new URL('http://whip/dummy'));
     const response = await app.inject({
       method: 'GET',
-      url: '/api/v1/tx/9191'
+      url: '/api/v1/tx/9191',
     });
     expect(response.statusCode).toEqual(200);
     const body = await response.json();
@@ -163,17 +163,21 @@ describe('API', () => {
   test('can return a specific transmitter that has a passthrough url', async () => {
     const engine = new Engine();
     const app = api({ engine });
-    await engine.addTransmitter(9191, new URL('http://whip/dummy'), new URL('srt://dummy:1234'));
+    await engine.addTransmitter(
+      9191,
+      new URL('http://whip/dummy'),
+      new URL('srt://dummy:1234'),
+    );
     const response = await app.inject({
       method: 'GET',
-      url: '/api/v1/tx/9191'
+      url: '/api/v1/tx/9191',
     });
     expect(response.statusCode).toEqual(200);
     const body = await response.json();
     expect(body.port).toEqual(9191);
     expect(body.whipUrl).toEqual('http://whip/dummy');
     expect(body.passThroughUrl).toBeDefined();
-  });  
+  });
 
   test('can delete a transmitter', async () => {
     const engine = new Engine();
@@ -183,7 +187,7 @@ describe('API', () => {
 
     const response = await app.inject({
       method: 'DELETE',
-      url: '/api/v1/tx/9191'
+      url: '/api/v1/tx/9191',
     });
     expect(response.statusCode).toEqual(204);
     const tx = engine.getTransmitter(9191);
@@ -197,13 +201,13 @@ describe('API', () => {
     // (fastify-4 era swagger-ui v1 responded with a 302 redirect instead).
     const response = await app.inject({
       method: 'GET',
-      url: '/api/docs'
+      url: '/api/docs',
     });
     expect(response.statusCode).toEqual(200);
     // The generated OpenAPI spec is still served under the docs route.
     const spec = await app.inject({
       method: 'GET',
-      url: '/api/docs/json'
+      url: '/api/docs/json',
     });
     expect(spec.statusCode).toEqual(200);
     expect(spec.json().info.title).toEqual('SRT WHIP Gateway API');
@@ -216,20 +220,27 @@ describe('API', () => {
     let t;
     mockSpawn.setDefault((cb) => {
       // Exit 1 after 2 sec
-      t = setTimeout(() => { return cb(1); }, 2000);
+      t = setTimeout(() => {
+        return cb(1);
+      }, 2000);
     });
-    await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
+    await engine.addTransmitter(
+      1234,
+      new URL('https://whip/channel/dummy'),
+      undefined,
+      mockSpawn,
+    );
     let response = await app.inject({
       method: 'PUT',
       url: '/api/v1/tx/1234/state',
       payload: {
-        desired: TxStatus.RUNNING
-      }
+        desired: TxStatus.RUNNING,
+      },
     });
     expect(response.statusCode).toEqual(200);
     response = await app.inject({
       method: 'GET',
-      url: '/api/v1/tx/1234'
+      url: '/api/v1/tx/1234',
     });
     const body = await response.json();
     expect(body.status).toEqual(TxStatus.RUNNING);
@@ -243,22 +254,29 @@ describe('API', () => {
     let t;
     mockSpawn.setDefault((cb) => {
       // Exit 1 after 2 sec
-      t = setTimeout(() => { return cb(1); }, 2000);
+      t = setTimeout(() => {
+        return cb(1);
+      }, 2000);
     });
-    mockSpawn.setSignals({ 'SIGKILL': true });
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
+    mockSpawn.setSignals({ SIGKILL: true });
+    const tx = await engine.addTransmitter(
+      1234,
+      new URL('https://whip/channel/dummy'),
+      undefined,
+      mockSpawn,
+    );
     await tx.start();
     let response = await app.inject({
       method: 'PUT',
       url: '/api/v1/tx/1234/state',
       payload: {
-        desired: TxStatus.STOPPED
-      }
+        desired: TxStatus.STOPPED,
+      },
     });
     expect(response.statusCode).toEqual(200);
     response = await app.inject({
       method: 'GET',
-      url: '/api/v1/tx/1234'
+      url: '/api/v1/tx/1234',
     });
     const body = await response.json();
     expect(body.status).toEqual(TxStatus.STOPPED);

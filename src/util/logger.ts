@@ -8,9 +8,13 @@ export const logger = winston.createLogger({
     if (typeof logData.message === 'string') {
       return `[${now.toISOString()}]: ${logData.level.toUpperCase()} [srt-whip-gw] ${logData.message}`;
     } else {
-      return `[${now.toISOString()}]: ${logData.level.toUpperCase()} [srt-whip-gw]: ` + inspect(logData.message);
+      return (
+        `[${now.toISOString()}]: ${logData.level.toUpperCase()} [srt-whip-gw]: ` +
+        inspect(logData.message)
+      );
     }
   }),
-  transports: []
-    .concat(!process.env.NO_CONSOLE_LOG ? new winston.transports.Console() : []),
-})
+  transports: [].concat(
+    !process.env.NO_CONSOLE_LOG ? new winston.transports.Console() : [],
+  ),
+});
