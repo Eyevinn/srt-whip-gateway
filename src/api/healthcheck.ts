@@ -10,7 +10,7 @@ export interface ApiHealthcheckOpts {
 const apiHealthcheck: FastifyPluginCallback<ApiHealthcheckOpts> = (
   fastify,
   opts,
-  next
+  next,
 ) => {
   fastify.get('/', async (request, reply) => {
     const transmitters = opts.engine.getAllTransmitters();
@@ -19,7 +19,7 @@ const apiHealthcheck: FastifyPluginCallback<ApiHealthcheckOpts> = (
       idle: 0,
       running: 0,
       stopped: 0,
-      failed: 0
+      failed: 0,
     };
     transmitters.forEach((tx) => {
       const status = tx.getStatus();
@@ -45,8 +45,8 @@ const apiHealthcheck: FastifyPluginCallback<ApiHealthcheckOpts> = (
       gui: '/ui',
       transmitters: {
         total: transmitters.length,
-        ...counts
-      }
+        ...counts,
+      },
     });
   });
   next();

@@ -1,22 +1,25 @@
-import { FastifyPluginCallback } from "fastify";
-import { Type } from '@sinclair/typebox'
+import { FastifyPluginCallback } from 'fastify';
+import { Type } from '@sinclair/typebox';
 
-import { Engine } from "../engine";
-import { Tx, TxStatus, TxStateChange } from "../types";
+import { Engine } from '../engine';
+import { Tx, TxStatus, TxStateChange } from '../types';
 
 export interface ApiEngineOpts {
   engine: Engine;
   apiKey?: string;
 }
 
-
 const ParamsPort = Type.Object({
   port: Type.Integer({
-    description: 'SRT port'
-  })
-})
+    description: 'SRT port',
+  }),
+});
 
-const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) => {
+const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (
+  fastify,
+  opts,
+  next,
+) => {
   let apiKey = '';
   if (opts.apiKey) {
     apiKey = opts.apiKey;
@@ -30,33 +33,35 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
     }
   });
 
-  fastify.get<{ Reply: Tx[]|string }>(
-    '/tx', 
-    { 
+  fastify.get<{ Reply: Tx[] | string }>(
+    '/tx',
+    {
       schema: {
         description: 'List all available transmitters',
         response: {
           200: Type.Array(Tx),
-          500: Type.String({ description: 'Error message' })
-        }
-      }
+          500: Type.String({ description: 'Error message' }),
+        },
+      },
     },
     async (request, reply) => {
       try {
         const transmitters = opts.engine.getAllTransmitters();
         const body = [];
-        transmitters.forEach(tx => {
+        transmitters.forEach((tx) => {
           body.push(tx.getObject());
-        })
+        });
         reply.status(200).send(body);
       } catch (e) {
         console.error(e);
-        reply.code(500).send('Exception thrown when trying to list all transmitters');
+        reply
+          .code(500)
+          .send('Exception thrown when trying to list all transmitters');
       }
-    }
+    },
   );
 
-  fastify.get<{ Params: { port: string }, Reply: Tx|string }>(
+  fastify.get<{ Params: { port: string }; Reply: Tx | string }>(
     '/tx/:port',
     {
       schema: {
@@ -64,9 +69,9 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         params: ParamsPort,
         response: {
           200: Tx,
-          500: Type.String({ description: 'Error message' })
-        }
-      }
+          500: Type.String({ description: 'Error message' }),
+        },
+      },
     },
     async (request, reply) => {
       try {
@@ -79,12 +84,14 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         reply.code(200).send(tx.getObject());
       } catch (e) {
         console.error(e);
-        reply.code(500).send('Exception thrown when trying to get a transmitter');
+        reply
+          .code(500)
+          .send('Exception thrown when trying to get a transmitter');
       }
-    }
+    },
   );
 
-  fastify.delete<{ Params: { port: string }, Reply: string }>(
+  fastify.delete<{ Params: { port: string }; Reply: string }>(
     '/tx/:port',
     {
       schema: {
@@ -92,8 +99,8 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         params: ParamsPort,
         response: {
           500: Type.String({ description: 'Error message' }),
-        }
-      }
+        },
+      },
     },
     async (request, reply) => {
       try {
@@ -102,12 +109,14 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         reply.code(204);
       } catch (e) {
         console.error(e);
-        reply.code(500).send('Exception thrown when trying to delete a transmitter');
+        reply
+          .code(500)
+          .send('Exception thrown when trying to delete a transmitter');
       }
-    }
-  )
+    },
+  );
 
-  fastify.post<{ Body: Tx, Reply: string }>(
+  fastify.post<{ Body: Tx; Reply: string }>(
     '/tx',
     {
       schema: {
@@ -115,25 +124,31 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         body: Tx,
         response: {
           201: Type.String(),
-          500: Type.String({ description: 'Error message' })
+          500: Type.String({ description: 'Error message' }),
         },
-      }
+      },
     },
     async (request, reply) => {
       try {
         const txObject = request.body;
-        await opts.engine.addTransmitter(txObject.port, 
-          new URL(txObject.whipUrl), 
-          txObject.passThroughUrl ? new URL(txObject.passThroughUrl) : undefined);
+        await opts.engine.addTransmitter(
+          txObject.port,
+          new URL(txObject.whipUrl),
+          txObject.passThroughUrl
+            ? new URL(txObject.passThroughUrl)
+            : undefined,
+        );
         reply.code(201).send('created');
       } catch (e) {
         console.error(e);
-        reply.code(500).send('Exception thrown when trying to add a new transmitter');
+        reply
+          .code(500)
+          .send('Exception thrown when trying to add a new transmitter');
       }
-    }
+    },
   );
 
-  fastify.put<{ Params: { port: string }, Body: TxStateChange, Reply: string }>(
+  fastify.put<{ Params: { port: string }; Body: TxStateChange; Reply: string }>(
     '/tx/:port/state',
     {
       schema: {
@@ -142,10 +157,10 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         body: TxStateChange,
         response: {
           200: Type.String(),
-          400: Type.String({ description: 'bad request message'}),
+          400: Type.String({ description: 'bad request message' }),
           500: Type.String(),
-        }
-      }
+        },
+      },
     },
     async (request, reply) => {
       try {
@@ -162,12 +177,16 @@ const apiEngine: FastifyPluginCallback<ApiEngineOpts> = (fastify, opts, next) =>
         }
       } catch (e) {
         console.error(e);
-        reply.code(500).send('Exception thrown when trying to change state of a transmitter');
+        reply
+          .code(500)
+          .send(
+            'Exception thrown when trying to change state of a transmitter',
+          );
       }
-    }
-  )
+    },
+  );
 
   next();
-}
+};
 
 export default apiEngine;

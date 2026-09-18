@@ -63,7 +63,7 @@ export class FileTransmitterStore implements TransmitterStore {
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) {
         logger.warn(
-          `Ignoring transmitter store at ${this.filePath}: expected an array`
+          `Ignoring transmitter store at ${this.filePath}: expected an array`,
         );
         return [];
       }
@@ -74,7 +74,7 @@ export class FileTransmitterStore implements TransmitterStore {
         return [];
       }
       logger.warn(
-        `Failed to read transmitter store at ${this.filePath}: ${err}`
+        `Failed to read transmitter store at ${this.filePath}: ${err}`,
       );
       return [];
     }
@@ -83,7 +83,11 @@ export class FileTransmitterStore implements TransmitterStore {
   async save(configs: TransmitterConfig[]): Promise<void> {
     await fs.promises.mkdir(path.dirname(this.filePath), { recursive: true });
     const tmpPath = `${this.filePath}.tmp`;
-    await fs.promises.writeFile(tmpPath, JSON.stringify(configs, null, 2), 'utf-8');
+    await fs.promises.writeFile(
+      tmpPath,
+      JSON.stringify(configs, null, 2),
+      'utf-8',
+    );
     await fs.promises.rename(tmpPath, this.filePath);
   }
 }
