@@ -40,14 +40,14 @@
     "parcel": "^2.7.0",
     "prettier": "2.7.1",
     "ts-jest": "^29.0.3",
-    "tsc-watch": "^5.0.3",
+    "tsc-watch": "^7.2.1",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@fastify/cors": "^10.1.0",
-    "@fastify/static": "^8.3.0",
+    "@fastify/static": "^10.1.3",
     "@fastify/swagger": "^9.8.1",
-    "@fastify/swagger-ui": "^5.2.6",
+    "@fastify/swagger-ui": "^6.1.1",
     "@fastify/type-provider-typebox": "^5.2.0",
     "@sinclair/typebox": "^0.33.24",
     "fastify": "^5.12.3",
