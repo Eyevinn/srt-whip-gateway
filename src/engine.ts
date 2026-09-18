@@ -3,7 +3,7 @@ import { TxStatus } from './types';
 import {
   InMemoryTransmitterStore,
   TransmitterConfig,
-  TransmitterStore
+  TransmitterStore,
 } from './store';
 
 export interface EngineOptions {
@@ -34,7 +34,7 @@ export class Engine {
       const transmitter = new Transmitter(
         config.port,
         new URL(config.whipUrl),
-        config.passThroughUrl ? new URL(config.passThroughUrl) : undefined
+        config.passThroughUrl ? new URL(config.passThroughUrl) : undefined,
       );
       this.transmitters.set(config.port, transmitter);
     }
@@ -48,17 +48,27 @@ export class Engine {
       configs.push({
         port: tx.getPort(),
         whipUrl: whipUrl.toString(),
-        passThroughUrl: passThroughUrl ? passThroughUrl.toString() : undefined
+        passThroughUrl: passThroughUrl ? passThroughUrl.toString() : undefined,
       });
     });
     await this.store.save(configs);
   }
 
-  async addTransmitter(srtPort: number, whipUrl: URL, passThroughUrl?: URL, mockSpawn?): Promise<Transmitter> {
+  async addTransmitter(
+    srtPort: number,
+    whipUrl: URL,
+    passThroughUrl?: URL,
+    mockSpawn?,
+  ): Promise<Transmitter> {
     if (this.transmitters.get(srtPort)) {
       throw new Error(`A transmitter for port ${srtPort} already exists`);
     }
-    const transmitter = new Transmitter(srtPort, whipUrl, passThroughUrl, mockSpawn);
+    const transmitter = new Transmitter(
+      srtPort,
+      whipUrl,
+      passThroughUrl,
+      mockSpawn,
+    );
     this.transmitters.set(srtPort, transmitter);
     await this.persist();
     return transmitter;
@@ -67,11 +77,17 @@ export class Engine {
   async removeTransmitter(srtPort: number) {
     const tx = this.transmitters.get(srtPort);
     if (tx) {
-      if ([ TxStatus.STOPPED, TxStatus.FAILED, TxStatus.IDLE ].includes(tx.getStatus())) {
+      if (
+        [TxStatus.STOPPED, TxStatus.FAILED, TxStatus.IDLE].includes(
+          tx.getStatus(),
+        )
+      ) {
         this.transmitters.delete(srtPort);
         await this.persist();
       } else {
-        throw new Error(`Failed to remove transmitter for port ${srtPort} as it is active`);
+        throw new Error(
+          `Failed to remove transmitter for port ${srtPort} as it is active`,
+        );
       }
     }
   }

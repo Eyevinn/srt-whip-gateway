@@ -25,7 +25,11 @@ describe('Transmitter config persistence', () => {
     const store = new FileTransmitterStore(dataDir);
     const engine = new Engine({ store });
     await engine.addTransmitter(1234, new URL('https://whip/channel/a'));
-    await engine.addTransmitter(2345, new URL('https://whip/channel/b'), new URL('srt://dummy:9000'));
+    await engine.addTransmitter(
+      2345,
+      new URL('https://whip/channel/b'),
+      new URL('srt://dummy:9000'),
+    );
 
     // Simulate a process restart: a brand new Engine on the same store.
     const restarted = new Engine({ store: new FileTransmitterStore(dataDir) });

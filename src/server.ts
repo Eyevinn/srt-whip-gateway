@@ -1,10 +1,12 @@
 import gui from '@fastify/static';
 import path from 'path';
-import api from "./api";
-import { Engine } from "./engine";
-import { FileTransmitterStore } from "./store";
+import api from './api';
+import { Engine } from './engine';
+import { FileTransmitterStore } from './store';
 
-const DATA_DIR = process.env.DATA_DIR ? process.env.DATA_DIR : path.join(process.cwd(), 'data');
+const DATA_DIR = process.env.DATA_DIR
+  ? process.env.DATA_DIR
+  : path.join(process.cwd(), 'data');
 
 const engine = new Engine({ store: new FileTransmitterStore(DATA_DIR) });
 

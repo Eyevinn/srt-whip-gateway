@@ -2,7 +2,7 @@ import MockSpawn from 'mock-spawn';
 
 import { Engine } from './engine';
 import { TxStatus } from './types';
-import { logger } from "./util/logger";
+import { logger } from './util/logger';
 
 describe('Engine', () => {
   let engine: Engine;
@@ -17,14 +17,18 @@ describe('Engine', () => {
   });
 
   test('transmitter is idle after creation', async () => {
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'));
+    const tx = await engine.addTransmitter(
+      1234,
+      new URL('https://whip/channel/dummy'),
+    );
     expect(tx.getStatus()).toEqual(TxStatus.IDLE);
   });
 
   test('does not allow two transmitters for the same srt port', async () => {
     await engine.addTransmitter(9999, new URL('https://whip/channel/dummy'));
-    await expect(engine.addTransmitter(9999, new URL('https://whip/channel/dummy')))
-      .rejects.toThrow(); 
+    await expect(
+      engine.addTransmitter(9999, new URL('https://whip/channel/dummy')),
+    ).rejects.toThrow();
   });
 
   test('does not remove an active transmitter', async () => {
@@ -32,11 +36,18 @@ describe('Engine', () => {
     let t;
     mockSpawn.setDefault((cb) => {
       // Exit 1 after 2 sec
-      t = setTimeout(() => { return cb(1); }, 2000);
+      t = setTimeout(() => {
+        return cb(1);
+      }, 2000);
     });
-    const tx = await engine.addTransmitter(1234, new URL('https://whip/channel/dummy'), undefined, mockSpawn);
+    const tx = await engine.addTransmitter(
+      1234,
+      new URL('https://whip/channel/dummy'),
+      undefined,
+      mockSpawn,
+    );
     await tx.start();
-    await tx.waitFor({ desiredStatus: [ TxStatus.RUNNING ]});
+    await tx.waitFor({ desiredStatus: [TxStatus.RUNNING] });
     await expect(engine.removeTransmitter(1234)).rejects.toThrow();
     clearTimeout(t);
   });

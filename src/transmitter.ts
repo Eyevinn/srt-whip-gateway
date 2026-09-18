@@ -11,7 +11,12 @@ export class Transmitter {
   private processSpawner;
   private process;
 
-  constructor(srtPort: number, whipUrl: URL, passThroughUrl?: URL, processSpawner?) {
+  constructor(
+    srtPort: number,
+    whipUrl: URL,
+    passThroughUrl?: URL,
+    processSpawner?,
+  ) {
     this.srtPort = srtPort;
     this.whipURL = whipUrl;
     this.passThroughURL = passThroughUrl;
@@ -25,9 +30,11 @@ export class Transmitter {
     return {
       port: this.srtPort,
       whipUrl: this.whipURL.toString(),
-      passThroughUrl: this.passThroughURL ? this.passThroughURL.toString() : undefined,
-      status: this.status
-    }
+      passThroughUrl: this.passThroughURL
+        ? this.passThroughURL.toString()
+        : undefined,
+      status: this.status,
+    };
   }
 
   getPort(): number {
@@ -47,31 +54,44 @@ export class Transmitter {
   }
 
   async start() {
-    logger.info(`[${this.srtPort}]: Starting transmission to ${this.whipURL.href}`);
+    logger.info(
+      `[${this.srtPort}]: Starting transmission to ${this.whipURL.href}`,
+    );
 
     const opts = [
-      '-a', '0.0.0.0',
-      '-p', this.srtPort,
-      '-u', this.whipURL.href,
-      '-s'
+      '-a',
+      '0.0.0.0',
+      '-p',
+      this.srtPort,
+      '-u',
+      this.whipURL.href,
+      '-s',
     ];
     if (this.passThroughURL) {
       opts.push(
-        '-r', this.passThroughURL.hostname,
-        '-o', this.passThroughURL.port.toString()
+        '-r',
+        this.passThroughURL.hostname,
+        '-o',
+        this.passThroughURL.port.toString(),
       );
     }
     this.process = this.processSpawner('whip-mpegts', opts);
     this.status = TxStatus.RUNNING;
     logger.info(`[${this.srtPort}]: Transmitter is running`);
 
-    this.process.stdout.on('data', data => { logger.debug(`[${this.srtPort}]: ${data}`)});
-    this.process.stderr.on('data', data => { logger.debug(`[${this.srtPort}]: ${data}`)});
-    this.process.on('exit', code => {
-      logger.info(`[${this.srtPort}]: Transmitter has stopped (${code||0})`);
+    this.process.stdout.on('data', (data) => {
+      logger.debug(`[${this.srtPort}]: ${data}`);
+    });
+    this.process.stderr.on('data', (data) => {
+      logger.debug(`[${this.srtPort}]: ${data}`);
+    });
+    this.process.on('exit', (code) => {
+      logger.info(`[${this.srtPort}]: Transmitter has stopped (${code || 0})`);
       logger.debug(this.process.spawnargs);
       if (code > 0) {
-        logger.info(`[${this.srtPort}]: Transmitter has unintentionally stopped`);
+        logger.info(
+          `[${this.srtPort}]: Transmitter has unintentionally stopped`,
+        );
         this.status = TxStatus.FAILED;
       } else {
         this.status = TxStatus.STOPPED;
@@ -79,8 +99,10 @@ export class Transmitter {
     });
   }
 
-  async stop({ doAwait } : { doAwait: boolean }) {
-    logger.info(`[${this.srtPort}]: Stopping transmission to ${this.whipURL.href}`);
+  async stop({ doAwait }: { doAwait: boolean }) {
+    logger.info(
+      `[${this.srtPort}]: Stopping transmission to ${this.whipURL.href}`,
+    );
     if (this.process) {
       let processExited = false;
 
@@ -94,7 +116,9 @@ export class Transmitter {
       // Force kill if process doesn't stop within 1 second
       setTimeout(() => {
         if (!processExited && this.process) {
-          logger.warn(`[${this.srtPort}]: Process did not stop gracefully, sending SIGKILL`);
+          logger.warn(
+            `[${this.srtPort}]: Process did not stop gracefully, sending SIGKILL`,
+          );
           this.process.kill('SIGKILL');
         }
       }, 1000);
@@ -102,11 +126,13 @@ export class Transmitter {
       this.status = TxStatus.STOPPED;
     }
     if (doAwait) {
-      await this.waitFor({ desiredStatus: [TxStatus.STOPPED, TxStatus.FAILED ] });
+      await this.waitFor({
+        desiredStatus: [TxStatus.STOPPED, TxStatus.FAILED],
+      });
     }
   }
 
-  waitFor({ desiredStatus }: { desiredStatus: TxStatus[] } ): Promise<void> {
+  waitFor({ desiredStatus }: { desiredStatus: TxStatus[] }): Promise<void> {
     return new Promise((resolve) => {
       const t = setInterval(() => {
         if (desiredStatus.includes(this.status)) {
@@ -114,6 +140,6 @@ export class Transmitter {
           resolve();
         }
       }, 500);
-    })
+    });
   }
 }

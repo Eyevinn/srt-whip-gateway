@@ -20,21 +20,25 @@ export async function getAllTransmitters(): Promise<Tx[]> {
   return [];
 }
 
-export async function addTransmitter(srtPort: number, whipUrl: string, restreamUrl?: string) {
+export async function addTransmitter(
+  srtPort: number,
+  whipUrl: string,
+  restreamUrl?: string,
+) {
   const txObject = {
     port: srtPort,
     whipUrl: whipUrl,
-    status: TxStatus.IDLE
+    status: TxStatus.IDLE,
   };
   if (restreamUrl) {
     txObject.passThroughUrl = restreamUrl;
   }
   const response = await fetch(API_URL, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(txObject),
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
   if (!response.ok) {
     console.error(await response.text());
@@ -42,7 +46,7 @@ export async function addTransmitter(srtPort: number, whipUrl: string, restreamU
 }
 
 export async function toggleState(srtPort: number) {
-  const response = await fetch(API_URL + "/" + srtPort);
+  const response = await fetch(API_URL + '/' + srtPort);
   if (response.ok) {
     const tx = await response.json();
     let newState;
@@ -51,14 +55,14 @@ export async function toggleState(srtPort: number) {
     } else {
       newState = TxStatus.STOPPED;
     }
-    const update = await fetch(API_URL + "/" + srtPort + "/state", {
-      method: "PUT",
+    const update = await fetch(API_URL + '/' + srtPort + '/state', {
+      method: 'PUT',
       body: JSON.stringify({
-        desired: newState
+        desired: newState,
       }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
     if (!update.ok) {
       console.error(await response.text());
@@ -67,8 +71,8 @@ export async function toggleState(srtPort: number) {
 }
 
 export async function removePort(srtPort: number) {
-  const response = await fetch(API_URL + "/" + srtPort, {
-    method: "DELETE"
+  const response = await fetch(API_URL + '/' + srtPort, {
+    method: 'DELETE',
   });
   if (!response.ok) {
     console.error(await response.text());
