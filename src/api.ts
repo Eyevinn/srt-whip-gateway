@@ -17,7 +17,12 @@ export default (opts: ApiOptions) => {
   const api = Fastify({
     ignoreTrailingSlash: true,
   }).withTypeProvider<TypeBoxTypeProvider>();
-  api.register(cors, {});
+  // @fastify/cors v11 narrowed the default `methods` to the CORS-safelisted
+  // methods (GET, HEAD, POST). Keep the pre-v11 default so cross-origin
+  // PUT/PATCH/DELETE requests to the transmitter API keep working.
+  api.register(cors, {
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  });
   api.register(swagger, {
     openapi: {
       info: {
