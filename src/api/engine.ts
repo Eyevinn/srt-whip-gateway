@@ -1,5 +1,5 @@
 import { FastifyPluginCallback } from 'fastify';
-import { Type } from '@sinclair/typebox';
+import { Type } from '@fastify/type-provider-typebox';
 
 import { Engine } from '../engine';
 import { Tx, TxStatus, TxStateChange } from '../types';

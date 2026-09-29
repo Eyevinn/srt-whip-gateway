@@ -4,7 +4,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: { allowJs: true } }],
+    '^.+\\.(mjs|[tj]sx?)$': ['ts-jest', { tsconfig: { allowJs: true } }],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(content-disposition)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!(content-disposition|typebox)/)'],
 };
