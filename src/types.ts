@@ -1,4 +1,4 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Static, Type } from '@fastify/type-provider-typebox';
 
 export enum TxStatus {
   IDLE = 'idle',
